@@ -45,6 +45,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var disposeBag = DisposeBag()
     var statusItemView:StatusItemView!
     
+    var isSpeedTesting = false
+
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
         signal(SIGPIPE, SIG_IGN)
         
@@ -53,6 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = statusMenu
         
         statusItemView = StatusItemView.create(statusItem: statusItem)
+        statusItemView.frame = CGRect(x: 0, y: 0, width: 65, height: 22)
         statusMenu.delegate = self
         
         // crash recorder
@@ -351,7 +355,25 @@ extension AppDelegate {
     }
     
     @IBAction func actionSpeedTest(_ sender: Any) {
-        
+        if isSpeedTesting {return}
+        isSpeedTesting = true
+        ApiRequest.getAllProxyList { [weak self] proxies in
+            let testGroup = DispatchGroup()
+            
+            for proxyName in proxies {
+                testGroup.enter()
+                ApiRequest.getProxyDelay(proxyName: proxyName) { delay in
+                    testGroup.leave()
+                    SpeedDataRecorder.shared.setDelay(proxyName, delay: delay)
+                }
+            }
+            testGroup.notify(queue: DispatchQueue.main, execute: {
+                NSUserNotificationCenter.default.postSpeedTestFinishNotice()
+                self?.syncConfig()
+                self?.isSpeedTesting = true
+            })
+        }
+
         
     }
     
@@ -412,9 +434,7 @@ extension AppDelegate {
         resetStreamApi()
     }
     
-    @IBAction func actionImportBunchJsonFile(_ sender: NSMenuItem) {
-        ConfigFileManager.importConfigFile()
-    }
+
     
     
     @IBAction func actionSetRemoteConfigUrl(_ sender: Any) {
@@ -424,31 +444,6 @@ extension AppDelegate {
     
     @IBAction func actionUpdateRemoteConfig(_ sender: Any) {
         RemoteConfigManager.updateConfigIfNeed()
-    }
-    
-    @IBAction func actionImportConfigFromSSURL(_ sender: NSMenuItem) {
-        let pasteBoard = NSPasteboard.general.string(forType: NSPasteboard.PasteboardType.string)
-        if let proxyModel = ProxyServerModel(urlStr: pasteBoard ?? "") {
-            ConfigFileManager.addProxyToConfig(proxy: proxyModel)
-        } else {
-            NSUserNotificationCenter.default.postImportConfigFromUrlFailNotice(urlStr: pasteBoard ?? "empty")
-        }
-    }
-    
-    @IBAction func actionScanQRCode(_ sender: NSMenuItem) {
-        if let urls = QRCodeUtil.ScanQRCodeOnScreen() {
-            for url in urls {
-                if let proxyModel = ProxyServerModel(urlStr: url) {
-                    ConfigFileManager.addProxyToConfig(proxy: proxyModel)
-                } else {
-                    NSUserNotificationCenter
-                        .default
-                        .postImportConfigFromUrlFailNotice(urlStr: url)
-                }
-            }
-        }else {
-            NSUserNotificationCenter.default.postQRCodeNotFoundNotice()
-        }
     }
 }
 

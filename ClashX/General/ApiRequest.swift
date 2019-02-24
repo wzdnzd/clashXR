@@ -17,6 +17,7 @@ class ApiRequest{
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 604800
         configuration.timeoutIntervalForResource = 604800
+        configuration.httpMaximumConnectionsPerHost = 30
         alamoFireManager = Alamofire.SessionManager(configuration: configuration)
     }
     
@@ -145,7 +146,7 @@ class ApiRequest{
         req("/rules").responseData { res in
             guard let data = res.result.value else {return}
             let rule = ClashRuleResponse.fromData(data)
-            completeHandler(rule.rules)
+            completeHandler(rule.rules ?? [])
         }
     }
 }

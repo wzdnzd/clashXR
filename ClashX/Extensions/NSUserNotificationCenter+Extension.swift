@@ -40,12 +40,13 @@ extension NSUserNotificationCenter {
         self.post(title: "Import config from url fail", info: "Unrecongized Url:\(urlStr)")
     }
     
-    func postQRCodeNotFoundNotice() {
-        self.post(title: "QRCode import failed", info: "Not found")
-    }
     
     func postProxyRemarkDupNotice(name:String) {
         self.post(title: "Proxy Remark duplicated", info: "Name:\(name)")
+    }
+    
+    func postSpeedTestFinishNotice() {
+        self.post(title: "SpeedTest".localized(), info: "SpeedTest Finished!".localized())
     }
 }
 
