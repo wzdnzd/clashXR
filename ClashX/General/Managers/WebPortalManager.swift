@@ -115,15 +115,14 @@ class WebPortalManager {
     }
     
     func getClashUrl(html:String) -> String? {
-        let pattern = "href=\"https://(.,*)*&clash=1\""
+        let pattern = "http.*?clash=1"
         do {
             let regex:NSRegularExpression = try NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
             let all = NSRange(location: 0, length: html.count)
             let r = regex.matches(in: html, options: .withTransparentBounds, range: all)
             guard let nsrange = r.first?.range(at: 0),
                 let range = Range(nsrange, in: html) else {return nil}
-            var res = html[range]
-            res = res.dropLast().dropFirst(6)
+            let res = html[range]
             return String(res)
         } catch {
             return nil
