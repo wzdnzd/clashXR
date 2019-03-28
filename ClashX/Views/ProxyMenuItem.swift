@@ -11,17 +11,30 @@ import Cocoa
 class ProxyMenuItem:NSMenuItem {
     var proxyName:String = ""
     
-    init(proxyName string: String, action selector: Selector?) {
-        super.init(title: string, action: selector, keyEquivalent: "")
+    init(proxy: ClashProxy, action selector: Selector?, maxProxyNameLength:CGFloat) {
+        super.init(title: proxy.name, action: selector, keyEquivalent: "")
         
-        if let delay = SpeedDataRecorder.shared.getDelay(string) {
-            let menuItemView = ProxyMenuItemView.create(proxy: string, delay: delay)
-            menuItemView.onClick = { [weak self] in
-                guard let self = self else {return}
-                MenuItemFactory.actionSelectProxy(sender: self)
-            }
-            self.view = menuItemView
+        proxyName = proxy.name
+        
+        if let his = proxy.history.first {
+            
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.tabStops = [
+                NSTextTab(textAlignment: .right, location: maxProxyNameLength + 80, options: [:]),
+            ]
+            
+            let str = "\(proxy.name)\t\(his.delayDisplay)"
+            
+            let attributed = NSMutableAttributedString(
+                string: str,
+                attributes: [NSAttributedString.Key.paragraphStyle: paragraph]
+            )
+            
+            let delayAttr = [NSAttributedString.Key.font:NSFont.menuFont(ofSize: 12)]
+            attributed.addAttributes(delayAttr, range: NSRange(proxy.name.utf16.count+1 ..< str.utf16.count))
+            self.attributedTitle = attributed
         }
+        
         
     }
     
@@ -32,13 +45,9 @@ class ProxyMenuItem:NSMenuItem {
     var isSelected:Bool = false {
         didSet {
             self.state = isSelected ? .on : .off
-            (self.view as? ProxyMenuItemView)?.isSelected = isSelected
         }
     }
     
-    func suggestWidth()->CGFloat {
-        return self.view?.fittingSize.width ?? 0
-    }
     
 
 }

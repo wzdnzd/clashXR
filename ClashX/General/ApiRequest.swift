@@ -17,7 +17,7 @@ class ApiRequest{
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 604800
         configuration.timeoutIntervalForResource = 604800
-        configuration.httpMaximumConnectionsPerHost = 30
+        configuration.httpMaximumConnectionsPerHost = 50
         alamoFireManager = Alamofire.SessionManager(configuration: configuration)
     }
     
@@ -36,8 +36,9 @@ class ApiRequest{
             guard ConfigManager.shared.isRunning else {
                 return request("")
             }
-
-            return request(ConfigManager.apiUrl + url,
+            
+            return shared.alamoFireManager
+                .request(ConfigManager.apiUrl + url,
                 method: method,
                 parameters: parameters,
                 encoding:encoding,
@@ -92,11 +93,11 @@ class ApiRequest{
         }
     }
     
-    static func requestProxyGroupList(completeHandler:@escaping (([String:[String:Any]])->())){
+    static func requestProxyGroupList(completeHandler:@escaping ((ClashProxyResp)->())){
         req("/proxies").responseJSON{
             res in
-            guard let data = res.result.value as? [String:[String:[String:Any]]] else {return}
-            completeHandler(data["proxies"]!)
+            let proxies = ClashProxyResp(res.result.value)
+            completeHandler(proxies)
         }
     }
     
@@ -121,12 +122,12 @@ class ApiRequest{
         }
     }
     
-    static func getAllProxyList(callback:@escaping (([String])->())) {
-        requestProxyGroupList { (groups) in
-            let lists:[String] = groups["GLOBAL"]?["all"] as? [String] ?? []
-            .filter({
-                ["Shadowsocks","Vmess","Socks5","Http"] .contains(groups[$0]?["type"] as? String ?? "")
-            })
+    static func getAllProxyList(callback:@escaping (([ClashProxyName])->())) {
+        requestProxyGroupList { proxyInfo in
+            let proxyGroupType:[ClashProxyType] = [.urltest,.fallback,.loadBalance,.select,.direct,.reject]
+            let lists:[ClashProxyName] = proxyInfo.proxies
+                .filter{$0.name == "GLOBAL" && proxyGroupType.contains($0.type)}
+                .first?.all ?? []
             callback(lists)
         }
     }

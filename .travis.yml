@@ -18,6 +18,8 @@ install:
 - cd ClashX/Resources
 - git clone -b gh-pages https://github.com/Dreamacro/clash-dashboard.git dashboard
 - cd ..
+- brew update
+- brew upgrade go
 - go version
 - go build -buildmode=c-archive
 - cd $TRAVIS_BUILD_DIR
@@ -46,3 +48,6 @@ deploy:
     repo: yichengchen/clashX
     branch: master
     tags: true
+
+after_deploy:
+- 'curl -u yichengchen:$GitHub_Token -X POST https://api.github.com/repos/yichengchen/clashX/pages/builds -H "Accept: application/vnd.github.mister-fantastic-preview+json"'
