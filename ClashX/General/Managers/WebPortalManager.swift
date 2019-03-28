@@ -38,7 +38,8 @@ class WebPortalManager {
         }
     }
     
-    private let apiUrl = "https://dlercloud.net"
+    private var apiUrl:String? = nil
+    private let entranceUrl = "https://dler.cloud"
     
     var isLogin:Bool {
         return username != nil && password != nil
@@ -68,12 +69,38 @@ class WebPortalManager {
         }
     }
     
+    func refreshApiUrl(complete:(()->())?=nil) {
+        print("getting real api url")
+        request(entranceUrl, method: .head).response(queue: DispatchQueue.global()) { res in
+            guard let targetUrl = res.response?.url,
+            let scheme = targetUrl.scheme,
+            let host = targetUrl.host
+                else {
+                    self.apiUrl = self.entranceUrl
+                    complete?()
+                    return
+            }
+            print("get target url:\(targetUrl.absoluteString)")
+            self.apiUrl = "\(scheme)://\(host)"
+            complete?()
+        }
+    }
+    
     private func req(
         _ url: String,
         method: HTTPMethod = .get,
         parameters: Parameters? = nil,
         encoding: ParameterEncoding = URLEncoding.default)
         -> DataRequest {
+            
+            guard let apiUrl = apiUrl else {
+                let sema = DispatchSemaphore(value: 0)
+                refreshApiUrl(){
+                    sema.signal()
+                }
+                sema.wait()
+                return self.req(url, method: method, parameters: parameters, encoding: encoding)
+            }
             
             return request(apiUrl + url,
                            method: method,
