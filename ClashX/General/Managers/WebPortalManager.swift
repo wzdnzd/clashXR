@@ -220,20 +220,22 @@ class WebPortalManager {
         }
     }
     
-    func refreshConfigUrl(complete:((String?)->())?=nil){
+    func refreshConfigUrl(complete:((String?, RemoteConfigModel?)->())?=nil){
         getUserHtml{
             err,html in
             if let err = err {
-                complete?(err)
+                complete?(err, nil)
                 return
             }
             guard let html = html else {return}
             guard let url = self.getClashUrl(html: html) else {
-                complete?("解析失败")
+                complete?("解析失败", nil)
                 return
             }
-            RemoteConfigManager.configUrl = url
-            complete?(nil)
+            let config = RemoteConfigModel(url: url, name: "DlerCloud")
+            RemoteConfigManager.shared.configs = [config]
+            RemoteConfigManager.shared.saveConfigs()
+            complete?(nil, config)
         }
     }
     
@@ -245,11 +247,21 @@ class WebPortalManager {
     
     @objc func actionRefreshConfigUrl(){
         NSAlert.alert(with: "点击开始更新,更新过程中请稍等")
-        refreshConfigUrl { (err) in
-            NSAlert.alert(with: "获取url成功,点击开始刷新配置文件")
-            RemoteConfigManager.updateConfigIfNeed() { err in
-                NSAlert.alert(with: err ?? "更新成功")
+        refreshConfigUrl { err,config in
+            if let err = err {
+                NSAlert.alert(with: "失败:\(err)")
+                return
             }
+            
+            guard let config = config else {assertionFailure(); return}
+            
+            NSAlert.alert(with: "获取url成功,点击开始刷新配置文件")
+            RemoteConfigManager.updateConfig(config: config, complete: { [weak config] error in
+                guard let config = config else {return}
+                config.updateTime = Date()
+                RemoteConfigManager.shared.saveConfigs()
+                NSAlert.alert(with: err ?? "更新成功")
+            })
         }
     }
     
@@ -272,6 +284,6 @@ class WebPortalManager {
     }
     
     @objc func actionRefreshConfig() {
-        RemoteConfigManager.updateConfigIfNeed()
+        RemoteConfigManager.shared.updateCheck()
     }
 }

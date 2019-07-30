@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="boC-mj-95N">
-                                <rect key="frame" x="114" y="203" width="162" height="59"/>
+                                <rect key="frame" x="154" y="232" width="81" height="30"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo" id="jXd-Xe-Hh8"/>
                             </imageView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="W8p-A3-tP9">
@@ -156,6 +156,7 @@
                         <outlet property="proxyModeMenuItem" destination="jGT-1M-xJu" id="3Xj-xK-MJj"/>
                         <outlet property="proxyModeRuleMenuItem" destination="89n-bD-JHk" id="lT1-J1-X3k"/>
                         <outlet property="proxySettingMenuItem" destination="8se-yr-wmp" id="yvm-QP-yoA"/>
+                        <outlet property="remoteConfigMenu" destination="a4G-S3-jxT" id="enN-fl-a9y"/>
                         <outlet property="separatorLineTop" destination="1fM-p6-bHd" id="NFb-qS-TKR"/>
                         <outlet property="sepatatorLineEndProxySelect" destination="n67-fU-hLx" id="Vgv-N6-SOH"/>
                         <outlet property="showNetSpeedIndicatorMenuItem" destination="YIO-Vj-64f" id="9a5-3N-Ylk"/>
@@ -249,26 +250,14 @@
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <menu key="submenu" title="Switch Configs" id="dcz-b4-hVy"/>
                                     </menuItem>
-                                    <menuItem title="Generate Config" id="a4G-S3-jxT">
+                                    <menuItem title="Remote Configs" id="a4G-S3-jxT">
                                         <modifierMask key="keyEquivalentModifierMask"/>
-                                        <menu key="submenu" title="Generate Config" id="IeJ-1Q-UaF">
+                                        <menu key="submenu" title="Remote Configs" id="IeJ-1Q-UaF">
                                             <items>
                                                 <menuItem title="Manage" id="Dwg-Qb-2AU">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <segue destination="6WI-Hi-v9j" kind="modal" id="Ot5-gq-dhX"/>
-                                                    </connections>
-                                                </menuItem>
-                                                <menuItem title="SSURL from pasteboard" enabled="NO" id="QX2-2U-3Ad">
-                                                    <modifierMask key="keyEquivalentModifierMask"/>
-                                                    <connections>
-                                                        <action selector="actionImportConfigFromSSURL:" target="Voe-Tx-rLC" id="FGa-8X-oxt"/>
-                                                    </connections>
-                                                </menuItem>
-                                                <menuItem title="QR Code from screen" enabled="NO" id="89G-Oc-S3l">
-                                                    <modifierMask key="keyEquivalentModifierMask"/>
-                                                    <connections>
-                                                        <action selector="actionScanQRCode:" target="Voe-Tx-rLC" id="RQR-HE-w4C"/>
                                                     </connections>
                                                 </menuItem>
                                             </items>
@@ -287,7 +276,7 @@
                                     <menuItem title="Show current proxy in menu" id="j9o-36-NTd">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
-                                            <binding destination="dwS-am-r7H" name="value" keyPath="values.kSDisableShowCurrentProxyInMenu" id="MoG-1X-cvu">
+                                            <binding destination="1yD-Uj-xCm" name="value" keyPath="values.kSDisableShowCurrentProxyInMenu" id="mD7-Uq-YXq">
                                                 <dictionary key="options">
                                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                 </dictionary>
@@ -383,6 +372,7 @@
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="fth-rt-saN" customClass="SUUpdater"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController representsSharedInstance="YES" id="1yD-Uj-xCm"/>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
@@ -748,7 +738,7 @@
                 <customObject id="1Mg-7q-ojs" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController id="r6q-tD-5zt"/>
             </objects>
-            <point key="canvasLocation" x="531" y="514"/>
+            <point key="canvasLocation" x="773" y="174"/>
         </scene>
         <!--Clash Web View Contoller-->
         <scene sceneID="hPF-qG-B6J">
@@ -780,6 +770,6 @@
     </scenes>
     <resources>
         <image name="Icon" width="512" height="512"/>
-        <image name="logo" width="162" height="59"/>
+        <image name="logo" width="81" height="29.5"/>
     </resources>
 </document>

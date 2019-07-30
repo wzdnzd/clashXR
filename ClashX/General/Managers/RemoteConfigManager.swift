@@ -16,7 +16,7 @@ class RemoteConfigManager {
     var autoUpateTimer: Timer?
     
     static let shared = RemoteConfigManager()
-
+    
     private init(){
         if let savedConfigs = UserDefaults.standard.object(forKey: "kRemoteConfigs") as? Data {
             let decoder = JSONDecoder()
@@ -34,7 +34,7 @@ class RemoteConfigManager {
         Logger.log(msg: "Saving Remote Config Setting")
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(configs) {
-             UserDefaults.standard.set(encoded, forKey: "kRemoteConfigs")
+            UserDefaults.standard.set(encoded, forKey: "kRemoteConfigs")
         }
     }
     
@@ -137,7 +137,7 @@ class RemoteConfigManager {
             return
         }
         urlRequest.cachePolicy = .reloadIgnoringCacheData
-
+        
         request(urlRequest).responseData { res in
             complete(res.result.value)
         }
@@ -151,50 +151,24 @@ class RemoteConfigManager {
             }
             guard let newConfigString = String(data: newData, encoding: .utf8),
                 verifyConfig(string: newConfigString) else {
-                complete?(NSLocalizedString("Remote Config Format Error", comment: ""))
-                return
+                    complete?(NSLocalizedString("Remote Config Format Error", comment: ""))
+                    return
             }
             let savePath = kConfigFolderPath.appending(config.name).appending(".yaml")
-
+            
             if config.name == ConfigManager.selectConfigName {
                 ConfigFileManager.shared.pauseForNextChange()
             }
             
-<<<<<<< HEAD
-            let savePath = kConfigFolderPath.appending(host).appending(".yml")
-            let fm = FileManager.default
-            do {
-                if fm.fileExists(atPath: savePath) {
-                    let current = try String(contentsOfFile: savePath)
-                    if current == newConfigString {
-                        if let complete = complete {
-                            complete(nil)
-                        } else {
-                            self.alert(with: "配置无需更新")
-                        }
-                        return
-                    }
-                    try fm.removeItem(atPath: savePath)
-                }
-                try newConfigString.write(toFile: savePath, atomically: true, encoding: .utf8)
-                ConfigManager.selectConfigName = host
-                NotificationCenter.default.post(Notification(name: kShouldUpDateConfig))
-                if let complete = complete {
-                    complete(nil)
-                } else {
-                    self.alert(with: "配置更新成功")
-=======
             do {
                 if FileManager.default.fileExists(atPath: savePath) {
                     try FileManager.default.removeItem(atPath: savePath)
->>>>>>> master
                 }
                 try newData.write(to: URL(fileURLWithPath: savePath))
                 complete?(nil)
             } catch let err {
                 complete?(err.localizedDescription)
             }
-
         }
         
     }
@@ -222,4 +196,3 @@ class RemoteConfigManager {
     }
     
 }
-

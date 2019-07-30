@@ -54,7 +54,7 @@ class LoginViewController: NSViewController {
             }
             hud.labelText = "获取托管配置文件地址"
             WebPortalManager.shared.refreshConfigUrl() {
-                errDesp in
+                errDesp, config in
                 if let errDesp = errDesp {
                     NSAlert.alert(with: errDesp)
                     hud.hide(true)
@@ -63,18 +63,23 @@ class LoginViewController: NSViewController {
                     return
                 }
                 
+                guard let config = config else {assertionFailure();return}
+                
                 hud.labelText = "刷新配置文件"
-                RemoteConfigManager.updateConfigIfNeed() { err in
+                RemoteConfigManager.updateConfig(config: config, complete: { [weak config] err in
+                    guard let config = config else {return}
                     hud.hide(true)
-
+                    
                     if let err = err {
                         NSAlert.alert(with:err)
                         self.view.window?.styleMask.insert(.closable)
                         return
                     }
                     NSAlert.alert(with: "配置获取成功")
+                    config.updateTime = Date()
+                    RemoteConfigManager.shared.saveConfigs()
                     self.dismiss(nil)
-                }
+                })
             }
         }
     }

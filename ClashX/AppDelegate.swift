@@ -45,6 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var webPortalMenuItem: NSMenuItem!
     
+    @IBOutlet weak var remoteConfigMenu: NSMenuItem!
     var disposeBag = DisposeBag()
     var statusItemView:StatusItemView!
     
@@ -110,7 +111,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 item.name == "url"
             })?.value else {return}
             
-            remoteConfigAutoupdateMenuItem.menu?.performActionForItem(at: 0)
+            remoteConfigMenu.submenu?.performActionForItem(at: 0)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "didGetUrl"), object: nil, userInfo: ["url":url])
@@ -126,8 +127,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // check and refresh api url
         _ = ConfigManager.apiUrl
-        
-        remoteConfigAutoupdateMenuItem.state = RemoteConfigManager.autoUpdateEnable ? .on : .off
         
         NotificationCenter.default.rx.notification(kShouldUpDateConfig).bind {
             [weak self] (note)  in

@@ -2,6 +2,9 @@
 /* Class = "NSMenuItem"; title = "ERROR"; ObjectID = "0iu-lB-eZN"; */
 "0iu-lB-eZN.title" = "ERROR";
 
+/* Class = "NSTextFieldCell"; title = "两步验证:"; ObjectID = "0SK-Nt-8dH"; */
+"0SK-Nt-8dH.title" = "两步验证:";
+
 /* Class = "NSButtonCell"; title = "Update"; ObjectID = "2Rx-ih-aGW"; */
 "2Rx-ih-aGW.title" = "更新";
 
@@ -26,11 +29,11 @@
 /* Class = "NSMenuItem"; title = "Ports"; ObjectID = "9i0-LH-x04"; */
 "9i0-LH-x04.title" = "端口";
 
+/* Class = "NSMenuItem"; title = "Remote Configs"; ObjectID = "a4G-S3-jxT"; */
+"a4G-S3-jxT.title" = "托管配置文件";
+
 /* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Main Menu";
-
-/* Class = "NSMenu"; title = "Remote Config"; ObjectID = "az2-wz-yyy"; */
-"az2-wz-yyy.title" = "托管配置";
 
 /* Class = "NSMenuItem"; title = "Start at login"; ObjectID = "B1J-XB-BiZ"; */
 "B1J-XB-BiZ.title" = "开机启动";
@@ -50,14 +53,20 @@
 /* Class = "NSMenuItem"; title = "Help"; ObjectID = "Dd9-2F-FVY"; */
 "Dd9-2F-FVY.title" = "帮助";
 
+/* Class = "NSMenuItem"; title = "SILENT"; ObjectID = "dVr-Xp-C0C"; */
+"dVr-Xp-C0C.title" = "SILENT";
+
 /* Class = "NSMenuItem"; title = "Open config Folder"; ObjectID = "DwE-WX-ETZ"; */
 "DwE-WX-ETZ.title" = "打开配置文件夹";
 
 /* Class = "NSMenuItem"; title = "Manage"; ObjectID = "Dwg-Qb-2AU"; */
 "Dwg-Qb-2AU.title" = "管理";
 
-/* Class = "NSMenuItem"; title = "Remote Config"; ObjectID = "h1C-R6-Y9w"; */
-"h1C-R6-Y9w.title" = "托管配置";
+/* Class = "NSTextFieldCell"; title = "密码:"; ObjectID = "ggR-6I-Wvb"; */
+"ggR-6I-Wvb.title" = "密码:";
+
+/* Class = "NSButtonCell"; title = "登录"; ObjectID = "hOq-Hs-ROt"; */
+"hOq-Hs-ROt.title" = "登录";
 
 /* Class = "NSMenuItem"; title = "About"; ObjectID = "hUb-k9-TEf"; */
 "hUb-k9-TEf.title" = "关于";
@@ -65,11 +74,11 @@
 /* Class = "NSMenuItem"; title = "api port:"; ObjectID = "hwG-qf-DeZ"; */
 "hwG-qf-DeZ.title" = "api port:";
 
-/* Class = "NSMenuItem"; title = "Update"; ObjectID = "I2P-Wd-Ns7"; */
-"I2P-Wd-Ns7.title" = "更新";
-
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "id7-f0-u56"; */
 "id7-f0-u56.title" = "Text Cell";
+
+/* Class = "NSMenu"; title = "Remote Configs"; ObjectID = "IeJ-1Q-UaF"; */
+"IeJ-1Q-UaF.title" = "托管配置文件";
 
 /* Class = "NSMenuItem"; title = "Show current proxy in menu"; ObjectID = "j9o-36-NTd"; */
 "j9o-36-NTd.title" = "快捷展示策略组策略";
@@ -92,8 +101,14 @@
 /* Class = "NSTableColumn"; headerCell.title = "Config Name"; ObjectID = "lRE-Xa-euB"; */
 "lRE-Xa-euB.headerCell.title" = "配置文件名称";
 
+/* Class = "NSMenuItem"; title = "DlerCloud"; ObjectID = "mW7-iZ-EQL"; */
+"mW7-iZ-EQL.title" = "DlerCloud";
+
 /* Class = "NSMenu"; title = "Ports"; ObjectID = "Ng4-Ia-KSz"; */
 "Ng4-Ia-KSz.title" = "Ports";
+
+/* Class = "NSTextFieldCell"; title = "邮箱:"; ObjectID = "nig-nK-uRh"; */
+"nig-nK-uRh.title" = "邮箱:";
 
 /* Class = "NSMenuItem"; title = "Direct"; ObjectID = "Np6-Pm-Lo3"; */
 "Np6-Pm-Lo3.title" = "直接连接";
@@ -110,8 +125,8 @@
 /* Class = "NSMenuItem"; title = "Reload config"; ObjectID = "q3G-VH-eyy"; */
 "q3G-VH-eyy.title" = "重载配置文件";
 
-/* Class = "NSMenuItem"; title = "Auto Update"; ObjectID = "r8s-OI-tgf"; */
-"r8s-OI-tgf.title" = "自动更新";
+/* Class = "NSViewController"; title = "登录"; ObjectID = "qUn-O2-deb"; */
+"qUn-O2-deb.title" = "登录";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "RCv-zz-HKW"; */
 "RCv-zz-HKW.title" = "Text Cell";
