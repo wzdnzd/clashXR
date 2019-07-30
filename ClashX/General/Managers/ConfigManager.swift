@@ -17,9 +17,12 @@ class ConfigManager {
     private let disposeBag = DisposeBag()
     var apiPort = "8080"
     var apiSecret:String? = nil
-
-    private init(){
-        setupNetworkNotifier()
+    
+    init() {
+        UserDefaults.standard.rx.observe(Bool.self, "kSDisableShowCurrentProxyInMenu").bind {
+            [weak self] disable in
+            self?.disableShowCurrentProxyInMenu = disable ?? false
+        }.disposed(by: disposeBag)
     }
     
     var currentConfig:ClashConfig?{
@@ -43,9 +46,14 @@ class ConfigManager {
         }
     }
     
+    var disableShowCurrentProxyInMenu = false
+    
     static var selectConfigName:String{
         get {
-            return UserDefaults.standard.string(forKey: "selectConfigName") ?? "config"
+            if shared.isRunning {
+                return UserDefaults.standard.string(forKey: "selectConfigName") ?? "config"
+            }
+            return "config"
         }
         set {
             UserDefaults.standard.set(newValue, forKey: "selectConfigName")
@@ -120,40 +128,19 @@ class ConfigManager {
     }
     
     func refreshApiInfo(){
-        apiPort = "7892"
+        apiPort = "9090"
         apiSecret = nil;
         if let yamlStr = try? String(contentsOfFile: kDefaultConfigFilePath),
-            var yaml = (try? Yams.load(yaml: yamlStr)) as? [String:Any] {
-            if let controller = yaml["external-controller"] as? String,
-                let port = controller.split(separator: ":").last{
-                apiPort = String(port)
-            } else {
-                yaml["external-controller"] = apiPort
-                ConfigFileManager.saveToClashConfigFile(config: yaml)
-            }
+            let yaml = (try? Yams.load(yaml: yamlStr)) as? [String:Any],
+            let controller = yaml["external-controller"] as? String,
+            let port = controller.components(separatedBy: ":").last {
+            apiPort = String(port)
             apiSecret = yaml["secret"] as? String
         } else {
             _ = ConfigFileManager.replaceConfigWithSampleConfig()
         }
     }
     
-    func setupNetworkNotifier() {
-        NetworkChangeNotifier.start()
-        NotificationCenter
-            .default
-            .rx
-            .notification(kSystemNetworkStatusDidChange)
-            .debounce(2, scheduler: MainScheduler.instance)
-            .subscribeOn(MainScheduler.instance)
-            .bind{ _ in
-            let (http,https,socks) = NetworkChangeNotifier.currentSystemProxySetting()
-            let proxySetted =
-                http == (self.currentConfig?.port ?? 0) &&
-                https == (self.currentConfig?.port ?? 0) &&
-                socks == (self.currentConfig?.socketPort ?? 0)
-            self.proxyPortAutoSet = proxySetted
-        }.disposed(by: disposeBag)
-    }
 }
 
 extension ConfigManager {
@@ -161,7 +148,7 @@ extension ConfigManager {
         do {
             let fileURLs = try FileManager.default.contentsOfDirectory(atPath: kConfigFolderPath)
             return fileURLs
-                .filter { String($0.split(separator: ".").last ?? "") == "yml"}
+                .filter { String($0.split(separator: ".").last ?? "") == "yaml"}
                 .map{$0.split(separator: ".").dropLast().joined(separator: ".")}
         } catch {
             return ["config"]

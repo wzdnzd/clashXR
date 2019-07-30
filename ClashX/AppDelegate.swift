@@ -15,6 +15,9 @@ import RxSwift
 import Fabric
 import Crashlytics
 
+private let statusItemLengthWithSpeed:CGFloat = 70
+
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
@@ -52,11 +55,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         signal(SIGPIPE, SIG_IGN)
         
         // setup menu item first
-        statusItem = NSStatusBar.system.statusItem(withLength:65)
+        statusItem = NSStatusBar.system.statusItem(withLength:statusItemLengthWithSpeed)
         statusItem.menu = statusMenu
         
         statusItemView = StatusItemView.create(statusItem: statusItem)
-        statusItemView.frame = CGRect(x: 0, y: 0, width: 65, height: 22)
+        statusItemView.frame = CGRect(x: 0, y: 0, width: statusItemLengthWithSpeed, height: 22)
         statusMenu.delegate = self
         
         // crash recorder
@@ -79,16 +82,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // check config vaild via api
         ConfigFileManager.checkFinalRuleAndShowAlert()
         
-        if RemoteConfigManager.configUrl != nil {
-            RemoteConfigManager.updateConfigIfNeed { err in
-                if let err = err {
-                    NSUserNotificationCenter.default.post(title: "配置更新失败", info: err)
-                } else {
-                    NSUserNotificationCenter.default.post(title: "配置更新", info: "更新成功")
-                }
-            }
-        }
-
+        // start watch config file change
+        ConfigFileManager.shared.watchConfigFile(configName: ConfigManager.selectConfigName)
+        
+        RemoteConfigManager.shared.autoUpdateCheck()
+        
     }
 
 
@@ -98,14 +96,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             _ = ProxyConfigHelperManager.setUpSystemProxy(port: nil,socksPort: nil)
         }
     }
+    
+    func application(_ application: NSApplication, open urls: [URL]) {
+        guard let url = urls.first else {return}
+        
+        guard let components = URLComponents(string: url.absoluteString),
+            let scheme = components.scheme,
+            scheme.hasPrefix("clash")
+            else {return}
+        
+        if components.path.hasSuffix("install-config") {
+            guard let url = components.queryItems?.first(where: { item in
+                item.name == "url"
+            })?.value else {return}
+            
+            remoteConfigAutoupdateMenuItem.menu?.performActionForItem(at: 0)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "didGetUrl"), object: nil, userInfo: ["url":url])
+            }
+            
+        } else {
+            Logger.log(msg: "Unknown url path:\(components.path)")
+        }
+
+    }
 
     func setupData() {
         
         // check and refresh api url
         _ = ConfigManager.apiUrl
         
-        // start watch config file change
-        ConfigFileManager.shared.watchConfigFile(configName: ConfigManager.selectConfigName)
+        remoteConfigAutoupdateMenuItem.state = RemoteConfigManager.autoUpdateEnable ? .on : .off
         
         NotificationCenter.default.rx.notification(kShouldUpDateConfig).bind {
             [weak self] (note)  in
@@ -119,7 +141,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             .bind {[weak self] (show) in
                 guard let self = self else {return}
                 self.showNetSpeedIndicatorMenuItem.state = (show ?? true) ? .on : .off
-                let statusItemLength:CGFloat = (show ?? true) ? 65 : 25
+                let statusItemLength:CGFloat = (show ?? true) ? statusItemLengthWithSpeed : 25
                 self.statusItem.length = statusItemLength
                 self.statusItemView.frame.size.width = statusItemLength
                 self.statusItemView.showSpeedContainer(show: (show ?? true))
@@ -153,7 +175,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 case .rule:self.proxyModeRuleMenuItem.state = .on
                 }
                 self.allowFromLanMenuItem.state = config.allowLan ? .on : .off
-                self.proxyModeMenuItem.title = "\("Proxy Mode".localized()) (\(config.mode.rawValue.localized()))"
+                
+                self.proxyModeMenuItem.title = "\(NSLocalizedString("Proxy Mode", comment: "")) (\(config.mode.name))"
                 
                 self.updateProxyList()
                 
@@ -250,16 +273,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             setUIPath(buffer)
         }
         
-        print("Trying start proxy")
+        Logger.log(msg: "Trying start proxy")
         if let cstring = run() {
             let error = String(cString: cstring)
             if (error != "success") {
                 ConfigManager.shared.isRunning = false
+                proxyModeMenuItem.isEnabled = false
                 NSUserNotificationCenter.default.postConfigErrorNotice(msg:error)
             } else {
                 ConfigManager.shared.isRunning = true
-                self.resetStreamApi()
-                self.dashboardMenuItem.isEnabled = true
+                proxyModeMenuItem.isEnabled = true
+                resetStreamApi()
+                dashboardMenuItem.isEnabled = true
             }
         }
     }
@@ -274,7 +299,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func resetStreamApi() {
         ApiRequest.shared.requestTrafficInfo(){ [weak self] up,down in
-            guard let `self` = self else {return}
+            guard let self = self else {return}
             DispatchQueue.main.async {
                 self.statusItemView.updateSpeedLabel(up: up, down: down)
             }
@@ -349,7 +374,7 @@ extension AppDelegate {
         pasteboard.clearContents()
         let port = ConfigManager.shared.currentConfig?.port ?? 0
         let socksport = ConfigManager.shared.currentConfig?.socketPort ?? 0
-        pasteboard.setString("export https_proxy=http://127.0.0.1:\(port);export http_proxy=http://127.0.0.1:\(port);export all_proxy=socks5://127.0.0.1:\(socksport)", forType: .string)
+        pasteboard.setString("export https_proxy=http://127.0.0.1:\(port);export http_proxy=http://127.0.0.1:\(port);export all_proxy=socks5h://127.0.0.1:\(socksport)", forType: .string)
     }
     
     @IBAction func actionSpeedTest(_ sender: Any) {
@@ -415,13 +440,15 @@ extension AppDelegate {
                 if notifaction{
                     NSUserNotificationCenter
                         .default
-                        .post(title: "Reload Config Succeed", info: "Succees")
+                        .post(title: NSLocalizedString("Reload Config Succeed", comment: ""),
+                              info: NSLocalizedString("Succees", comment: ""))
                 }
             } else {
                 if (notifaction) {
                     NSUserNotificationCenter
                         .default
-                        .post(title: "Reload Config Fail", info: error ?? "")
+                        .post(title: NSLocalizedString("Reload Config Fail", comment: ""),
+                              info: error ?? "")
                 }
             }
             
@@ -438,13 +465,9 @@ extension AppDelegate {
 
     
     
-    @IBAction func actionSetRemoteConfigUrl(_ sender: Any) {
-        RemoteConfigManager.showUrlInputAlert()
-    }
-    
     
     @IBAction func actionUpdateRemoteConfig(_ sender: Any) {
-        RemoteConfigManager.updateConfigIfNeed()
+        RemoteConfigManager.shared.updateCheck(ignoreTimeLimit: true)
     }
 }
 

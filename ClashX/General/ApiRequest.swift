@@ -18,6 +18,7 @@ class ApiRequest{
         configuration.timeoutIntervalForRequest = 604800
         configuration.timeoutIntervalForResource = 604800
         configuration.httpMaximumConnectionsPerHost = 50
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         alamoFireManager = Alamofire.SessionManager(configuration: configuration)
     }
     
@@ -58,13 +59,14 @@ class ApiRequest{
                 completeHandler(config)
             } else {
                 NSUserNotificationCenter.default.post(title: "Error", info: "Get clash config failed. Try Fix your config file then reload config or restart ClashX")
+                (NSApplication.shared.delegate as? AppDelegate)?.startProxy()
             }
         }
     }
     
     
     static func requestConfigUpdate(callback:@escaping ((String?)->())){
-        let filePath = "\(kConfigFolderPath)\(ConfigManager.selectConfigName).yml"
+        let filePath = "\(kConfigFolderPath)\(ConfigManager.selectConfigName).yaml"
         
         req("/configs", method: .put,parameters: ["Path":filePath],encoding: JSONEncoding.default).responseJSON {res in
             if (res.response?.statusCode == 204) {
