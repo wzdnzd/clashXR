@@ -142,7 +142,7 @@ class WebPortalManager {
     }
     
     func getClashUrl(html:String) -> String? {
-        let pattern = "http.*?clash=1"
+        let pattern = "http.*?clash=ss"
         do {
             let regex:NSRegularExpression = try NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
             let all = NSRange(location: 0, length: html.count)
