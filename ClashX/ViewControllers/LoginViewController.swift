@@ -15,7 +15,6 @@ class LoginViewController: NSViewController {
     
     @IBOutlet weak var passwordTextField: NSSecureTextField!
     
-    @IBOutlet weak var authCodeTextField: NSSecureTextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +43,7 @@ class LoginViewController: NSViewController {
         self.view.addSubview(hud)
         hud.removeFromSuperViewOnHide = true
 
-        WebPortalManager.shared.login(mail: emailTextField.stringValue, password: passwordTextField.stringValue, authCode: authCodeTextField.stringValue) {
+        WebPortalManager.shared.login(mail: emailTextField.stringValue, password: passwordTextField.stringValue) {
             errDesp in
             if let errDesp = errDesp {
                 NSAlert.alert(with: errDesp)

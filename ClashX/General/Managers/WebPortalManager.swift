@@ -13,36 +13,12 @@ import SwiftyJSON
 class WebPortalManager {
     static let shared = WebPortalManager()
     
-    init() {
-        loadCookies()
-    }
-    
-    func saveCookies(response: DataResponse<Any>) {
-        let headerFields = response.response?.allHeaderFields as! [String: String]
-        let url = response.response?.url
-        let cookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields, for: url!)
-        var cookieArray = [[HTTPCookiePropertyKey: Any]]()
-        for cookie in cookies {
-            cookieArray.append(cookie.properties!)
-        }
-        UserDefaults.standard.set(cookieArray, forKey: "savedCookies")
-        UserDefaults.standard.synchronize()
-    }
-    
-    func loadCookies() {
-        guard let cookieArray = UserDefaults.standard.array(forKey: "savedCookies") as? [[HTTPCookiePropertyKey: Any]] else { return }
-        for cookieProperties in cookieArray {
-            if let cookie = HTTPCookie(properties: cookieProperties) {
-                HTTPCookieStorage.shared.setCookie(cookie)
-            }
-        }
-    }
-    
-    private var apiUrl:String? = nil
     private let entranceUrl = "https://dler.cloud"
+    private lazy var apiUrl:String = entranceUrl
+
     
     var isLogin:Bool {
-        return username != nil && password != nil
+        return username != nil && token != nil
     }
     
     var username:String? {
@@ -60,12 +36,12 @@ class WebPortalManager {
         
     }
     
-    var password:String? {
+    var token:String? {
         get {
-            return UserDefaults.standard.string(forKey: "kwebpwd")
+            return UserDefaults.standard.string(forKey: "ktoken")
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "kwebpwd")
+            UserDefaults.standard.set(newValue, forKey: "ktoken")
         }
     }
     
@@ -93,14 +69,14 @@ class WebPortalManager {
         encoding: ParameterEncoding = URLEncoding.default)
         -> DataRequest {
             
-            guard let apiUrl = apiUrl else {
-                let sema = DispatchSemaphore(value: 0)
-                refreshApiUrl(){
-                    sema.signal()
-                }
-                sema.wait()
-                return self.req(url, method: method, parameters: parameters, encoding: encoding)
-            }
+//            guard let apiUrl = apiUrl else {
+//                let sema = DispatchSemaphore(value: 0)
+//                refreshApiUrl(){
+//                    sema.signal()
+//                }
+//                sema.wait()
+//                return self.req(url, method: method, parameters: parameters, encoding: encoding)
+//            }
             
             return request(apiUrl + url,
                            method: method,
@@ -109,18 +85,17 @@ class WebPortalManager {
                            headers: [:])
     }
     
-    func login(mail:String,password:String,authCode:String="",complete:((String?)->())?=nil) {
-        req("/auth/login",
+    func login(mail:String,password:String,complete:((String?)->())?=nil) {
+        req("/api/v1/login",
             method: .post,
-            parameters: ["email":mail,"passwd":password,"code":authCode,"remember_me":"on"]
-            ).responseJSON{ [weak self]
+            parameters: ["email":mail,"passwd":password]
+            ).responseJSON{
+                [weak self]
                 resp in
                 guard let self = self else {return}
                 guard let r = resp.result.value else {
                     if resp.response?.statusCode == 200 {
                         self.username = mail
-                        self.password = password
-                        self.saveCookies(response: resp)
                         complete?(nil)
                     } else {
                         complete?("请求失败")
@@ -130,42 +105,22 @@ class WebPortalManager {
 
                 let json = JSON(r)
                 
-                if json["ret"].intValue == 1 {
+                if let token = json["data"]["token"].string{
                     self.username = mail
-                    self.password = password
-                    self.saveCookies(response: resp)
+                    self.token = token
                     complete?(nil)
                 } else {
-                    complete?(json["msg"].string ?? "未知错误")
+                    complete?("登陆失败" + json["msg"].stringValue)
                 }
         }
     }
     
-    func getClashUrl(html:String) -> String? {
-        let pattern = "http.*?clash=ss"
-        do {
-            let regex:NSRegularExpression = try NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
-            let all = NSRange(location: 0, length: html.count)
-            let r = regex.matches(in: html, options: .withTransparentBounds, range: all)
-            guard let nsrange = r.first?.range(at: 0),
-                let range = Range(nsrange, in: html) else {return nil}
-            let res = html[range]
-            return String(res)
-        } catch {
-            return nil
-        }
-    }
+   
     
     lazy var accountItem:NSMenuItem = {
         return NSMenuItem(title: username ?? "", action: nil, keyEquivalent: "")
     }()
 
-    
-    lazy var refreshRemoteConfigUrlItem:NSMenuItem = {
-        let item = NSMenuItem(title: "更新托管配置网址", action:#selector(actionRefreshConfigUrl) , keyEquivalent: "")
-        item.target = self
-        return item
-    }()
     
     lazy var refreshRemoteConfigItem:NSMenuItem = {
         let item = NSMenuItem(title: "更新托管配置", action:#selector(actionRefreshConfigUrl) , keyEquivalent: "")
@@ -179,60 +134,48 @@ class WebPortalManager {
         return item
     }()
     
-    lazy var checkInItem:NSMenuItem = {
-        let item = NSMenuItem(title: "签到", action:#selector(actionCheckIn) , keyEquivalent: "")
-        item.target = self
-        return item
-    }()
     
     lazy var menu:NSMenu = {
         let m = NSMenu(title: "menu")
-        m.items = [accountItem,checkInItem,refreshRemoteConfigUrlItem,refreshRemoteConfigItem,logoutItem]
+        m.items = [accountItem,refreshRemoteConfigItem,logoutItem]
         return m
     }()
     
     
-    func getUserHtml(sureLogin:Bool = false, complete:((String?,String?)->())?=nil) {
-        req("/user").responseString { (resp) in
-            guard let html = resp.result.value else {
-                complete?("请求失败",nil)
+    func getRemoteConfig(token:String, complete:((String?,String?)->())?=nil) {
+        
+        req("/api/v1/managed/clash_ss", method: .post, parameters: ["access_token":token], encoding: JSONEncoding.default).responseJSON { res in
+            guard let value = res.result.value else {
+                complete?("请求失败", nil)
                 return
             }
             
-            if html.contains("使用邮箱/密码登陆") {
-                if sureLogin {
-                    complete?("登录失败",nil)
-                    self.actionLogout()
-                    return
-                }
-                print("重新登录")
-                self.login(mail: self.username ?? "", password: self.password ?? "") {
-                    error in
-                    if let error = error {
-                        complete?(error,nil)
-                    } else {
-                        self.getUserHtml(sureLogin:true,complete: complete)
-                    }
-                }
-            } else {
-                complete?(nil,html)
+            let json = JSON(value)
+            guard let token = json["data"].string else {
+                complete?("解析失败",nil)
+                return
             }
+
+            complete?(nil, token)
         }
     }
     
     func refreshConfigUrl(complete:((String?, RemoteConfigModel?)->())?=nil){
-        getUserHtml{
-            err,html in
+        
+        guard let token = self.token else {
+            complete?("登录失效！请重新登录",nil)
+            return
+        }
+        
+        getRemoteConfig(token: token) {
+            err, url in
+            
             if let err = err {
                 complete?(err, nil)
                 return
             }
-            guard let html = html else {return}
-            guard let url = self.getClashUrl(html: html) else {
-                complete?("解析失败", nil)
-                return
-            }
-            let config = RemoteConfigModel(url: url, name: "DlerCloud")
+            
+            let config = RemoteConfigModel(url: url!, name: "DlerCloud")
             RemoteConfigManager.shared.configs = [config]
             RemoteConfigManager.shared.saveConfigs()
             complete?(nil, config)
@@ -241,8 +184,7 @@ class WebPortalManager {
     
     @objc func actionLogout() {
         self.username = nil
-        self.password = nil
-        UserDefaults.standard.removeObject(forKey: "savedCookies")
+        self.token = nil
     }
     
     @objc func actionRefreshConfigUrl(){
@@ -255,35 +197,13 @@ class WebPortalManager {
             
             guard let config = config else {assertionFailure(); return}
             
-            NSAlert.alert(with: "获取url成功,点击开始刷新配置文件")
             RemoteConfigManager.updateConfig(config: config, complete: { [weak config] error in
+                NSAlert.alert(with: err ?? "更新成功")
                 guard let config = config else {return}
                 config.updateTime = Date()
                 RemoteConfigManager.shared.saveConfigs()
-                NSAlert.alert(with: err ?? "更新成功")
             })
         }
     }
     
-    @objc func actionCheckIn(){
-        
-        getUserHtml {
-            _,_ in
-            self.req("/user/checkin",method: .post).responseJSON{
-                resp in
-                guard let res = resp.result.value else {
-                    NSUserNotificationCenter.default.post(title: "签到", info: "请求失败")
-                    return
-                }
-                let json = JSON(res)
-                let msg = json["msg"].string ?? "未知错误"
-                NSUserNotificationCenter.default.post(title: "签到", info: msg)
-                
-            }
-        }
-    }
-    
-    @objc func actionRefreshConfig() {
-        RemoteConfigManager.shared.updateCheck()
-    }
 }

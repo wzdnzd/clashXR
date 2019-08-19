@@ -11,18 +11,18 @@
             <objects>
                 <viewController title="登录" storyboardIdentifier="loginViewController" showSeguePresentationStyle="single" id="qUn-O2-deb" customClass="LoginViewController" customModule="ClashX" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="NrO-oZ-eJL">
-                        <rect key="frame" x="0.0" y="0.0" width="389" height="291"/>
+                        <rect key="frame" x="0.0" y="0.0" width="389" height="234"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="boC-mj-95N">
-                                <rect key="frame" x="154" y="232" width="81" height="30"/>
+                                <rect key="frame" x="154" y="174" width="81" height="31"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo" id="jXd-Xe-Hh8"/>
                             </imageView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="W8p-A3-tP9">
-                                <rect key="frame" x="76" y="91" width="237" height="110"/>
+                                <rect key="frame" x="76" y="82" width="237" height="70"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tgv-uO-O30">
-                                        <rect key="frame" x="24" y="86" width="35" height="17"/>
+                                        <rect key="frame" x="24" y="47" width="35" height="17"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="邮箱:" id="nig-nK-uRh">
                                             <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -30,7 +30,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="c19-C5-uR2">
-                                        <rect key="frame" x="67" y="80" width="170" height="30"/>
+                                        <rect key="frame" x="67" y="40" width="170" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="arI-Qv-8Cl"/>
                                             <constraint firstAttribute="width" constant="170" id="iMN-VB-6oG"/>
@@ -41,36 +41,20 @@
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="i1p-9e-Mto">
-                                        <rect key="frame" x="24" y="46" width="35" height="17"/>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i1p-9e-Mto">
+                                        <rect key="frame" x="24" y="7" width="35" height="17"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="密码:" id="ggR-6I-Wvb">
                                             <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
-                                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="738-4N-ehq">
+                                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VAa-xp-YYZ">
                                         <rect key="frame" x="67" y="0.0" width="170" height="30"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="170" id="X8V-M5-kNX"/>
-                                            <constraint firstAttribute="height" constant="30" id="zuM-2h-rIE"/>
+                                            <constraint firstAttribute="width" constant="170" id="N0X-6m-ceU"/>
+                                            <constraint firstAttribute="height" constant="30" id="cfX-ZE-20e"/>
                                         </constraints>
-                                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" echosBullets="NO" id="0CV-tO-xIf">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </secureTextFieldCell>
-                                    </secureTextField>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="di4-pe-QhN">
-                                        <rect key="frame" x="-2" y="6" width="61" height="17"/>
-                                        <textFieldCell key="cell" lineBreakMode="clipping" title="两步验证:" id="0SK-Nt-8dH">
-                                            <font key="font" usesAppearanceFont="YES"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VAa-xp-YYZ">
-                                        <rect key="frame" x="67" y="40" width="170" height="30"/>
                                         <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="umi-dP-wfl">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -84,20 +68,15 @@
                                 <constraints>
                                     <constraint firstItem="i1p-9e-Mto" firstAttribute="centerY" secondItem="VAa-xp-YYZ" secondAttribute="centerY" id="0as-Y4-mRv"/>
                                     <constraint firstItem="Tgv-uO-O30" firstAttribute="centerY" secondItem="c19-C5-uR2" secondAttribute="centerY" id="0cM-jK-Mms"/>
-                                    <constraint firstItem="i1p-9e-Mto" firstAttribute="trailing" secondItem="di4-pe-QhN" secondAttribute="trailing" id="7Sq-Fc-xsS"/>
-                                    <constraint firstItem="di4-pe-QhN" firstAttribute="centerY" secondItem="738-4N-ehq" secondAttribute="centerY" id="M9V-zD-7md"/>
                                     <constraint firstItem="VAa-xp-YYZ" firstAttribute="top" secondItem="c19-C5-uR2" secondAttribute="bottom" constant="10" id="NsP-T2-5IY"/>
-                                    <constraint firstItem="Tgv-uO-O30" firstAttribute="trailing" secondItem="di4-pe-QhN" secondAttribute="trailing" id="VN4-bo-aJb"/>
+                                    <constraint firstItem="c19-C5-uR2" firstAttribute="leading" secondItem="Tgv-uO-O30" secondAttribute="trailing" constant="10" id="Psw-6u-LOZ"/>
+                                    <constraint firstAttribute="bottom" secondItem="VAa-xp-YYZ" secondAttribute="bottom" id="QWn-U4-ncG"/>
                                     <constraint firstItem="VAa-xp-YYZ" firstAttribute="leading" secondItem="c19-C5-uR2" secondAttribute="leading" id="eae-ZV-qAQ"/>
                                     <constraint firstAttribute="trailing" secondItem="c19-C5-uR2" secondAttribute="trailing" id="fm7-mc-rUh"/>
-                                    <constraint firstItem="738-4N-ehq" firstAttribute="leading" secondItem="di4-pe-QhN" secondAttribute="trailing" constant="10" id="geU-Ji-uEF"/>
                                     <constraint firstItem="VAa-xp-YYZ" firstAttribute="height" secondItem="c19-C5-uR2" secondAttribute="height" id="heO-pG-x4l"/>
-                                    <constraint firstAttribute="bottom" secondItem="738-4N-ehq" secondAttribute="bottom" id="jqM-3Y-RWu"/>
                                     <constraint firstItem="c19-C5-uR2" firstAttribute="top" secondItem="W8p-A3-tP9" secondAttribute="top" id="ryZ-EI-j7c"/>
-                                    <constraint firstItem="di4-pe-QhN" firstAttribute="leading" secondItem="W8p-A3-tP9" secondAttribute="leading" id="usn-NJ-M9K"/>
-                                    <constraint firstItem="738-4N-ehq" firstAttribute="top" secondItem="VAa-xp-YYZ" secondAttribute="bottom" constant="10" id="wMX-wR-uCy"/>
+                                    <constraint firstItem="Tgv-uO-O30" firstAttribute="leading" secondItem="W8p-A3-tP9" secondAttribute="leading" constant="26" id="wa7-75-8ek"/>
                                     <constraint firstItem="VAa-xp-YYZ" firstAttribute="width" secondItem="c19-C5-uR2" secondAttribute="width" id="wcT-YC-vID"/>
-                                    <constraint firstAttribute="trailing" secondItem="738-4N-ehq" secondAttribute="trailing" id="y6C-pb-rwo"/>
                                 </constraints>
                             </customView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Uas-4j-cWz">
@@ -115,6 +94,8 @@
                             </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="Uas-4j-cWz" firstAttribute="top" secondItem="W8p-A3-tP9" secondAttribute="bottom" constant="41" id="4wO-by-3Kh"/>
+                            <constraint firstItem="W8p-A3-tP9" firstAttribute="top" secondItem="boC-mj-95N" secondAttribute="bottom" constant="22" id="5e2-h0-bkJ"/>
                             <constraint firstItem="boC-mj-95N" firstAttribute="centerX" secondItem="NrO-oZ-eJL" secondAttribute="centerX" id="6BQ-Bv-Art"/>
                             <constraint firstItem="W8p-A3-tP9" firstAttribute="centerX" secondItem="NrO-oZ-eJL" secondAttribute="centerX" id="ZbT-Pj-0Bb"/>
                             <constraint firstItem="boC-mj-95N" firstAttribute="top" secondItem="NrO-oZ-eJL" secondAttribute="top" constant="29" id="gnG-7Y-BfM"/>
@@ -124,7 +105,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="authCodeTextField" destination="738-4N-ehq" id="CEf-hc-OIy"/>
                         <outlet property="emailTextField" destination="c19-C5-uR2" id="TsX-eV-9M5"/>
                         <outlet property="logoView" destination="boC-mj-95N" id="hjY-Ja-J1K"/>
                         <outlet property="passwordTextField" destination="VAa-xp-YYZ" id="yCJ-T3-vrO"/>
@@ -132,7 +112,7 @@
                 </viewController>
                 <customObject id="nqx-jP-ll7" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-9.5" y="336.5"/>
+            <point key="canvasLocation" x="-36.5" y="221.5"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">

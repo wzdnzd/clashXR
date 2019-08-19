@@ -12,7 +12,6 @@
 		492C4869210EE6B9004554A0 /* ApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492C4868210EE6B9004554A0 /* ApiRequest.swift */; };
 		492C4871210EF62E004554A0 /* ClashConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492C4870210EF62E004554A0 /* ClashConfig.swift */; };
 		492D7321216CEC4000146BC1 /* ClashX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 492D731F216CEC4000146BC1 /* ClashX.a */; };
-		493196A2216331F400A8E6E7 /* NetworkChangeNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493196A1216331F400A8E6E7 /* NetworkChangeNotifier.swift */; };
 		49389DAA21E890010016D07C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49389DA921E890010016D07C /* LoginViewController.swift */; };
 		49389DAC21E890CA0016D07C /* WebPortalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49389DAB21E890CA0016D07C /* WebPortalManager.swift */; };
 		49389DAF21E8D1BE0016D07C /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 49389DAD21E8D1BE0016D07C /* MBProgressHUD.m */; };
@@ -138,7 +137,7 @@
 		492D731F216CEC4000146BC1 /* ClashX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = ClashX.a; path = ClashX/ClashX.a; sourceTree = SOURCE_ROOT; };
 		492D7320216CEC4000146BC1 /* ClashX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClashX.h; path = ClashX/ClashX.h; sourceTree = SOURCE_ROOT; };
 		493196A1216331F400A8E6E7 /* NetworkChangeNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChangeNotifier.swift; sourceTree = "<group>"; };
-		49389DA921E890010016D07C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = /Users/yicheng/Code/clashX/ClashX/ViewControllers/LoginViewController.swift; sourceTree = "<absolute>"; };
+		49389DA921E890010016D07C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = /Users/etan.chen/Code/clashX/ClashX/ViewControllers/LoginViewController.swift; sourceTree = "<absolute>"; };
 		49389DAB21E890CA0016D07C /* WebPortalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPortalManager.swift; sourceTree = "<group>"; };
 		49389DAD21E8D1BE0016D07C /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		49389DAE21E8D1BE0016D07C /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
