@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.10.3</string>
+	<string>1.10.5</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -46,7 +46,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.10.3</string>
+	<string>1.10.5</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -78,6 +78,15 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>SWBApplication</string>
+	<key>SMAuthorizedClients</key>
+	<array>
+		<string>identifier "com.west2online.ClashX" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: chen yicheng (96U846XGYH)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
+	</array>
+	<key>SMPrivilegedExecutables</key>
+	<dict>
+		<key>com.west2online.ClashX.ProxyConfigHelper</key>
+		<string>anchor apple generic and identifier "com.west2online.ClashX.ProxyConfigHelper" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = MEWHFZ92DY)</string>
+	</dict>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>

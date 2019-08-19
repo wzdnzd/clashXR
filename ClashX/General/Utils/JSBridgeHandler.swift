@@ -48,13 +48,13 @@ class JsBridgeUtil {
             if let enable = anydata as? Bool {
                 ConfigManager.shared.proxyPortAutoSet = enable
                 if let config = ConfigManager.shared.currentConfig {
-                    let success:Bool
                     if enable{
-                        success = ProxyConfigHelperManager.setUpSystemProxy(port:  config.port,socksPort: config.socketPort)
+                        SystemProxyManager.shared.saveProxy()
+                        SystemProxyManager.shared.enableProxy(port: config.port, socksPort: config.socketPort)
                     } else {
-                        success = ProxyConfigHelperManager.setUpSystemProxy(port:  nil,socksPort: nil)
+                        SystemProxyManager.shared.disableProxy(port: config.port, socksPort: config.socketPort)
                     }
-                    responseCallback?(success)
+                    responseCallback?(true)
                 } else {
                     responseCallback?(false)
                 }
@@ -63,7 +63,6 @@ class JsBridgeUtil {
             }
         }
         
-        // 剪贴板
         bridge.registerHandler("setPasteboard") {(anydata, responseCallback) in
             if let str = anydata as? String {
                 NSPasteboard.general.setString(str, forType: .string)

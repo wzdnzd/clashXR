@@ -21,7 +21,7 @@ private let statusItemLengthWithSpeed:CGFloat = 70
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
-
+    
     @IBOutlet weak var statusMenu: NSMenu!
     @IBOutlet weak var proxySettingMenuItem: NSMenuItem!
     @IBOutlet weak var autoStartMenuItem: NSMenuItem!
@@ -54,7 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         signal(SIGPIPE, SIG_IGN)
-        
+                
         // setup menu item first
         statusItem = NSStatusBar.system.statusItem(withLength:statusItemLengthWithSpeed)
         statusItem.menu = statusMenu
@@ -62,13 +62,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItemView = StatusItemView.create(statusItem: statusItem)
         statusItemView.frame = CGRect(x: 0, y: 0, width: statusItemLengthWithSpeed, height: 22)
         statusMenu.delegate = self
-        
         // crash recorder
         failLaunchProtect()
         registCrashLogger()
         
         // install proxy helper
-        _ = ProxyConfigHelperManager.install()
+        _ = ClashResourceManager.check()
+        SystemProxyManager.shared.checkInstall()
         ConfigFileManager.copySampleConfigIfNeed()
         ConfigManager.shared.refreshApiInfo()
         
@@ -76,7 +76,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // start proxy
         setupData()
-        actionUpdateConfig(self)
+        updateConfig(showNotification: false)
         updateLoggingLevel()
         hideFunctionIfNeed()
         
@@ -94,7 +94,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         if ConfigManager.shared.proxyPortAutoSet {
-            _ = ProxyConfigHelperManager.setUpSystemProxy(port: nil,socksPort: nil)
+            let port = ConfigManager.shared.currentConfig?.port ?? 0
+            let socketPort = ConfigManager.shared.currentConfig?.socketPort ?? 0
+            SystemProxyManager.shared.disableProxy(port: port, socksPort: socketPort)
         }
     }
     
@@ -132,7 +134,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.rx.notification(kShouldUpDateConfig).bind {
             [weak self] (note)  in
             guard let self = self else {return}
-            self.actionUpdateConfig(nil)
+            let showNotice = note.userInfo?["notification"] as? Bool ?? true
+            self.updateConfig(showNotification: showNotice)
         }.disposed(by: disposeBag)
         
         
@@ -181,7 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.updateProxyList()
                 
                 if (old?.port != config.port && ConfigManager.shared.proxyPortAutoSet) {
-                    _ = ProxyConfigHelperManager.setUpSystemProxy(port: config.port,socksPort: config.socketPort)
+                    SystemProxyManager.shared.enableProxy(port: config.port, socksPort: config.socketPort)
                 }
                 
                 self.httpPortMenuItem.title  = "Http Port:\(config.port)"
@@ -311,6 +314,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     
+    func updateConfig(showNotification: Bool = true) {
+        startProxy()
+        guard ConfigManager.shared.isRunning else {return}
+        
+        ApiRequest.requestConfigUpdate() { [weak self] error in
+            guard let self = self else {return}
+            if (error == nil) {
+                self.syncConfig()
+                self.resetStreamApi()
+                self.selectProxyGroupWithMemory()
+                self.selectOutBoundModeWithMenory()
+                self.selectAllowLanWithMenory()
+                ConfigFileManager.checkFinalRuleAndShowAlert()
+                if showNotification {
+                    NSUserNotificationCenter.default
+                        .post(title: NSLocalizedString("Reload Config Succeed", comment: ""),
+                              info: NSLocalizedString("Succees", comment: ""))
+                }
+            } else if showNotification {
+                NSUserNotificationCenter.default
+                    .post(title: NSLocalizedString("Reload Config Fail", comment: ""),
+                          info: error ?? "")
+            }
+        }
+    }
+    
 }
 
 // MARK: Main actions
@@ -359,12 +388,14 @@ extension AppDelegate {
     
     @IBAction func actionSetSystemProxy(_ sender: Any) {
         ConfigManager.shared.proxyPortAutoSet = !ConfigManager.shared.proxyPortAutoSet
+        let port = ConfigManager.shared.currentConfig?.port ?? 0
+        let socketPort = ConfigManager.shared.currentConfig?.socketPort ?? 0
+        
         if ConfigManager.shared.proxyPortAutoSet {
-            let port = ConfigManager.shared.currentConfig?.port ?? 0
-            let socketPort = ConfigManager.shared.currentConfig?.socketPort ?? 0
-            _ = ProxyConfigHelperManager.setUpSystemProxy(port: port,socksPort:socketPort)
+            SystemProxyManager.shared.saveProxy()
+            SystemProxyManager.shared.enableProxy(port: port, socksPort: socketPort)
         } else {
-            _ = ProxyConfigHelperManager.setUpSystemProxy(port: nil,socksPort: nil)
+            SystemProxyManager.shared.disableProxy(port: port, socksPort: socketPort)
         }
         
     }
@@ -424,35 +455,8 @@ extension AppDelegate {
         NSWorkspace.shared.openFile(kConfigFolderPath)
     }
     
-    @IBAction func actionUpdateConfig(_ sender: Any?) {
-        startProxy()
-        guard ConfigManager.shared.isRunning else {return}
-        let notifaction = self != (sender as? NSObject)
-        ApiRequest.requestConfigUpdate() { [weak self] error in
-            guard let self = self else {return}
-            if (error == nil) {
-                self.syncConfig()
-                self.resetStreamApi()
-                self.selectProxyGroupWithMemory()
-                self.selectOutBoundModeWithMenory()
-                self.selectAllowLanWithMenory()
-                ConfigFileManager.checkFinalRuleAndShowAlert()
-                if notifaction{
-                    NSUserNotificationCenter
-                        .default
-                        .post(title: NSLocalizedString("Reload Config Succeed", comment: ""),
-                              info: NSLocalizedString("Succees", comment: ""))
-                }
-            } else {
-                if (notifaction) {
-                    NSUserNotificationCenter
-                        .default
-                        .post(title: NSLocalizedString("Reload Config Fail", comment: ""),
-                              info: error ?? "")
-                }
-            }
-            
-        }
+    @IBAction func actionUpdateConfig(_ sender: AnyObject) {
+        updateConfig()
     }
     
     @IBAction func actionSetLogLevel(_ sender: NSMenuItem) {
@@ -467,7 +471,7 @@ extension AppDelegate {
     
     
     @IBAction func actionUpdateRemoteConfig(_ sender: Any) {
-        RemoteConfigManager.shared.updateCheck(ignoreTimeLimit: true)
+        RemoteConfigManager.shared.updateCheck(ignoreTimeLimit: true, showNotification: true)
     }
 }
 
