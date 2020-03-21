@@ -23,15 +23,13 @@ A rule based proxy For Mac base on [Clash](https://github.com/Dreamacro/clash).
 You can download from [release](https://github.com/yichengchen/clashX/releases) page
 
 ## Build
+- Make sure have python3 and golang installed in your computer.
+
 - Download deps
   ```
   bash install_dependency.sh
   ```
-- Build clash core. 
-  ```
-  cd ClashX
-  python3 build_clash.py
-  ```
+
 - Build and run.
 
 ## Config
@@ -39,22 +37,16 @@ You can download from [release](https://github.com/yichengchen/clashX/releases) 
 
 The default configuration directory is `$HOME/.config/clash`
 
-The default name of the configuration file is `config.ymal`. You can use your custom config name and switch config in menu `Config` section.
+The default name of the configuration file is `config.yaml`. You can use your custom config name and switch config in menu `Config` section.
 
-To Change the ports of ClashX, you need to modify the `config.ymal` file. The `General` section settings in your custom config file would be ignored.
+To Change the ports of ClashX, you need to modify the `config.yaml` file. The `General` section settings in your custom config file would be ignored.
 
-Checkout [Clash](https://github.com/Dreamacro/clash) or [SS-Rule-Snippet for Clash](https://github.com/Hackl0us/SS-Rule-Snippet/blob/master/LAZY_RULES/clash.yml) for more detail.
+Checkout [Clash](https://github.com/Dreamacro/clash) or [SS-Rule-Snippet for Clash](https://github.com/Hackl0us/SS-Rule-Snippet/blob/master/LAZY_RULES/clash.yaml) for more detail.
 
 ## Advance Config
 ### Change your status menu icon
 
   Place your icon file in the `~/.config/clash/menuImage.png`  then restart ClashX
-
-### Disable auto restore proxy setting.
-
-  ```
-  defaults write com.west2online.ClashX kDisableRestoreProxy -bool true
-  ```
 
 ### Change default system ignore list.
 

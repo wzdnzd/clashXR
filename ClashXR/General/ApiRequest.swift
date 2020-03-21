@@ -16,10 +16,6 @@ protocol ApiRequestStreamDelegate: class {
     func didGetLog(log: String, level: String)
 }
 
-enum RequestError: Error {
-    case decodeFail
-}
-
 typealias ErrorString = String
 
 class ApiRequest {
@@ -73,15 +69,12 @@ class ApiRequest {
 
     static func requestConfig(completeHandler: @escaping ((ClashConfig) -> Void)) {
         if !ConfigManager.builtInApiMode {
-            req("/configs").responseData {
-                res in
-                do {
-                    let data = try res.result.get()
-                    guard let config = ClashConfig.fromData(data) else {
-                        throw RequestError.decodeFail
-                    }
+            req("/configs").responseDecodable(of: ClashConfig.self) {
+                resp in
+                switch resp.result {
+                case let .success(config):
                     completeHandler(config)
-                } catch let err {
+                case let .failure(err):
                     Logger.log(err.localizedDescription)
                     NSUserNotificationCenter.default.post(title: "Error", info: err.localizedDescription)
                 }
@@ -150,27 +143,26 @@ class ApiRequest {
     }
 
     static func requestProxyGroupList(completeHandler: ((ClashProxyResp) -> Void)? = nil) {
-        if !ConfigManager.builtInApiMode {
-            req("/proxies").responseJSON {
-                res in
-                let proxies = ClashProxyResp(try? res.result.get())
-                ApiRequest.shared.proxyRespCache = proxies
-                completeHandler?(proxies)
-            }
-            return
+        req("/proxies").responseJSON {
+            res in
+            let proxies = ClashProxyResp(try? res.result.get())
+            ApiRequest.shared.proxyRespCache = proxies
+            completeHandler?(proxies)
         }
-
-        let json = JSON(parseJSON: clashGetProxies()?.toString() ?? "")
-        let proxies = ClashProxyResp(json.object)
-        completeHandler?(proxies)
-        ApiRequest.shared.proxyRespCache = proxies
     }
 
     static func requestProxyProviderList(completeHandler: ((ClashProviderResp) -> Void)? = nil) {
-        req("/providers/proxies").responseData { res in
-            let provider = ClashProviderResp.create(try? res.result.get())
-            completeHandler?(provider)
-        }
+        req("/providers/proxies")
+            .responseDecodable(of: ClashProviderResp.self, decoder: ClashProviderResp.decoder) { resp in
+                switch resp.result {
+                case let .success(providerResp):
+                    completeHandler?(providerResp)
+                case let .failure(err):
+                    print(err)
+                    completeHandler?(ClashProviderResp())
+                    assertionFailure()
+                }
+            }
     }
 
     static func updateAllowLan(allow: Bool, completeHandler: (() -> Void)? = nil) {
@@ -207,7 +199,7 @@ class ApiRequest {
     static func getProxyDelay(proxyName: String, callback: @escaping ((Int) -> Void)) {
         req("/proxies/\(proxyName.encoded)/delay",
             method: .get,
-            parameters: ["timeout": 5000, "url": "http://www.gstatic.com/generate_204"])
+            parameters: ["timeout": 5000, "url": ConfigManager.shared.benchMarkUrl])
             .responseJSON { res in
                 switch res.result {
                 case let .success(value):
@@ -243,15 +235,23 @@ class ApiRequest {
 
 extension ApiRequest {
     static func getConnections(completeHandler: @escaping ([ClashConnectionSnapShot.Connection]) -> Void) {
-        req("/connections").responseData { res in
-            guard let data = try? res.result.get() else { return }
-            let resp = ClashConnectionSnapShot.fromData(data)
-            completeHandler(resp.connections)
+        req("/connections").responseDecodable(of: ClashConnectionSnapShot.self) { resp in
+            switch resp.result {
+            case let .success(snapshot):
+                completeHandler(snapshot.connections)
+            case .failure:
+                assertionFailure()
+                completeHandler([])
+            }
         }
     }
 
     static func closeConnection(_ conn: ClashConnectionSnapShot.Connection) {
-        req("/connections/".appending(conn.id), method: .delete)
+        req("/connections/".appending(conn.id), method: .delete).response { _ in }
+    }
+
+    static func closeAllConnection() {
+        req("/connections", method: .delete).response { _ in }
     }
 }
 

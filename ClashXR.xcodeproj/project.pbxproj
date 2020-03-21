@@ -55,6 +55,7 @@
 		4EE3C7052374FF5F00683B13 /* Pods_ClashXR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25EC8D7AAAAA52DAACEA7F59 /* Pods_ClashXR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4EE3C7082374FFB500683B13 /* ClashX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE3C7062374FFB400683B13 /* ClashX.a */; };
 		7099A830FE178EEA922BEB70 /* Pods_ClashXR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25EC8D7AAAAA52DAACEA7F59 /* Pods_ClashXR.framework */; };
+		F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */; };
 		F915A4622366ADEF004840BE /* ClashConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915A4612366ADEF004840BE /* ClashConnection.swift */; };
 		F9203A26236342820020D57D /* AppDelegate+..swift in Sources */ = {isa = PBXBuildFile; fileRef = F9203A25236342820020D57D /* AppDelegate+..swift */; };
 		F92D0B24236BC12000575E15 /* SavedProxyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92D0B23236BC12000575E15 /* SavedProxyModel.swift */; };
@@ -182,6 +183,7 @@
 		4E49531F23753ACC00806BBA /* com.west2online.ClashXR.ProxyConfigHelper.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = com.west2online.ClashXR.ProxyConfigHelper.entitlements; sourceTree = "<group>"; };
 		4EE3C7062374FFB400683B13 /* ClashX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = ClashX.a; path = ClashXR/ClashX.a; sourceTree = SOURCE_ROOT; };
 		4EE3C7072374FFB500683B13 /* ClashX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClashX.h; path = ClashXR/ClashX.h; sourceTree = SOURCE_ROOT; };
+		F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupMenu.swift; sourceTree = "<group>"; };
 		F915A4612366ADEF004840BE /* ClashConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashConnection.swift; sourceTree = "<group>"; };
 		F9203A25236342820020D57D /* AppDelegate+..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+..swift"; sourceTree = "<group>"; };
 		F92D0B23236BC12000575E15 /* SavedProxyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedProxyModel.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				499A485922ED781100F6C675 /* RemoteConfigAddView.xib */,
 				495340B220DE68C300B0D3FF /* StatusItemView.swift */,
 				495340AF20DE5F7200B0D3FF /* StatusItemView.xib */,
+				F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				663E4677213FCDC4006F11BB /* Copy Files */,
 				4929F1E621BC170D0059D8B4 /* Run Script - Fabric */,
 				4EBAFCA723744E8400999018 /* Embed Frameworks */,
+				494ED8F023EB0B36008D5D2F /* Run Script - Sparkle */,
 			);
 			buildRules = (
 			);
@@ -526,7 +530,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = west2online;
 				TargetAttributes = {
 					49CF3B1C20CD7463001EBF94 = {
@@ -619,6 +623,24 @@
 			shellPath = /bin/sh;
 			shellScript = "BUNDLE_ID=${PRODUCT_BUNDLE_IDENTIFIER}\nNORMAL_ID=\"com.west2online.ClashXR\"\nif [ ${BUNDLE_ID} == ${NORMAL_ID} ] ; then\necho ${CONFIGURATION}\nif [ ${CONFIGURATION} = \"Release\" ];\nthen\n\n\"${PODS_ROOT}/Fabric/run\" e5990c61f53f0e5713e37f78458291760d631147 cf9c0c3d1632310f1e08fc6e07aedd6076855b99d2a08f9ff586c2894ae1602e\nfi\nelse\necho \"BundleID:${BUNDLE_ID} is not com.west2online.ClashXR\"\nfi\n\n";
 		};
+		494ED8F023EB0B36008D5D2F /* Run Script - Sparkle */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Sparkle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n\n# By default, use the configured code signing identity for the project/target\nIDENTITY=\"${CODE_SIGN_IDENTITY}\"\nif [ \"$IDENTITY\" == \"\" ]\nthen\n  # If a code signing identity is not specified, use ad hoc signing\n  IDENTITY=\"-\"\nfi\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n";
+		};
 		A741C26F5755233F0D7CEC6F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -674,6 +696,7 @@
 				499A486522EEA3FD00F6C675 /* Array+Safe.swift in Sources */,
 				F92D0B24236BC12000575E15 /* SavedProxyModel.swift in Sources */,
 				F92D0B2A236C759100575E15 /* NSTextField+Vibrancy.swift in Sources */,
+				F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */,
 				4952C3BF2115C7CA004A4FA8 /* MenuItemFactory.swift in Sources */,
 				F977FAAC2366790500C17F1F /* AutoUpgardeManager.swift in Sources */,
 				499A485822ED715200F6C675 /* RemoteConfigModel.swift in Sources */,
@@ -863,11 +886,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashXR/ClashXR.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.17.1;
-				DEVELOPMENT_TEAM = 8U6T3TBX56;
+				CURRENT_PROJECT_VERSION = 1.18.4.1;
+				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -888,7 +911,7 @@
 					"$(PROJECT_DIR)/ClashXR",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.17.1;
+				MARKETING_VERSION = 1.18.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.west2online.ClashXR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -907,11 +930,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashXR/ClashXR.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.17.1;
-				DEVELOPMENT_TEAM = 8U6T3TBX56;
+				CURRENT_PROJECT_VERSION = 1.18.4.1;
+				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -932,7 +955,7 @@
 					"$(PROJECT_DIR)/ClashXR",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.17.1;
+				MARKETING_VERSION = 1.18.4.1;
 				OTHER_CODE_SIGN_FLAGS = "--timestamp";
 				PRODUCT_BUNDLE_IDENTIFIER = com.west2online.ClashXR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -948,9 +971,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ProxyConfigHelper/com.west2online.ClashXR.ProxyConfigHelper.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 8U6T3TBX56;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ProxyConfigHelper/Helper-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -977,9 +1000,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ProxyConfigHelper/com.west2online.ClashXR.ProxyConfigHelper.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 8U6T3TBX56;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/ProxyConfigHelper/Helper-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;

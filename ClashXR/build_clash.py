@@ -2,11 +2,12 @@ import subprocess
 import datetime
 import plistlib
 import os
+from add_build_info import write_to_info
 
 def get_version():
     with open('./go.mod') as file:
         for line in file.readlines():
-            if "clash" in line and "ClashXR" not in line:
+            if "clash" in line and "ClashX" not in line:
                 return line.split(" ")[-1].strip()
     return "unknown"
 
@@ -20,21 +21,6 @@ go build -ldflags '-X "github.com/whojave/clash/constant.Version={version}" \
 -X "github.com/whojave/clash/constant.BuildTime={build_time}"' \
 -buildmode=c-archive """
     subprocess.check_output(command, shell=True)
-
-
-def write_to_info(version):
-    path = "info.plist"
-
-    with open(path, 'rb') as f:
-        contents = plistlib.load(f)
-
-    if not contents:
-        exit(-1)
-
-    contents["coreVersion"] = version
-    with open(path, 'wb') as f:
-        plistlib.dump(contents, f, sort_keys=False)
-
 
 def run():
     version = get_version()

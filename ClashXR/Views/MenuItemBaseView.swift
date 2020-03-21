@@ -6,22 +6,16 @@
 //  Copyright © 2019 west2online. All rights reserved.
 //
 
-import Carbon
 import Cocoa
 
 class MenuItemBaseView: NSView {
     private var isMouseInsideView = false
     private var isMenuOpen = false
-    private var eventHandler: EventHandlerRef?
-    private let handleClick: Bool
     private let autolayout: Bool
 
     // MARK: Public
 
-    var isHighlighted: Bool {
-        let enable = enclosingMenuItem?.isEnabled ?? true
-        return (isMouseInsideView || isMenuOpen) && enable
-    }
+    var isHighlighted: Bool = false
 
     let effectView: NSVisualEffectView = {
         let effectView = NSVisualEffectView()
@@ -32,17 +26,18 @@ class MenuItemBaseView: NSView {
         return effectView
     }()
 
-    var labels: [NSTextField] {
+    var cells: [NSCell?] {
         assertionFailure("Please override")
         return []
     }
 
-    static let labelFont = NSFont.menuFont(ofSize: 14)
+    var labels: [NSTextField] {
+        return []
+    }
 
-    init(frame frameRect: NSRect = NSRect(x: 0, y: 0, width: 0, height: 20),
-         handleClick: Bool,
-         autolayout: Bool) {
-        self.handleClick = handleClick
+    static let labelFont = NSFont.menuBarFont(ofSize: 0)
+
+    init(frame frameRect: NSRect = NSRect(x: 0, y: 0, width: 0, height: 20), autolayout: Bool) {
         self.autolayout = autolayout
         super.init(frame: frameRect)
         setupView()
@@ -60,10 +55,6 @@ class MenuItemBaseView: NSView {
         assertionFailure("Please override this method")
     }
 
-    func updateBackground(_ label: NSTextField) {
-        label.cell?.backgroundStyle = isHighlighted ? .emphasized : .normal
-    }
-
     // MARK: Private
 
     private func setupView() {
@@ -72,22 +63,37 @@ class MenuItemBaseView: NSView {
         // background
         addSubview(effectView)
         effectView.translatesAutoresizingMaskIntoConstraints = false
-        effectView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-        effectView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        effectView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        effectView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        if autolayout {
+            effectView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+            effectView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+            effectView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+            effectView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        }
     }
 
     // MARK: Override
 
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        effectView.material = isHighlighted ? .selection : .popover
-        labels.forEach { updateBackground($0) }
+    override func layout() {
+        super.layout()
+        if !autolayout {
+            effectView.frame = bounds
+        }
     }
 
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        labels.forEach { $0.textColor = (enclosingMenuItem?.isEnabled ?? true) ? NSColor.labelColor : NSColor.placeholderTextColor }
+        let highlighted = isHighlighted && (enclosingMenuItem?.isEnabled ?? false)
+        effectView.material = highlighted ? .selection : .popover
+        cells.forEach { $0?.backgroundStyle = isHighlighted ? .emphasized : .normal }
+    }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        super.viewWillMove(toWindow: newWindow)
+        if let newWindow = newWindow, !newWindow.isKeyWindow {
+            newWindow.becomeKey()
+        }
+        updateTrackingAreas()
     }
 
     override func viewDidMoveToSuperview() {
@@ -100,36 +106,13 @@ class MenuItemBaseView: NSView {
         }
     }
 
-    override func mouseUp(with event: NSEvent) {
-        didClickView()
-    }
-
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        trackingAreas.forEach { removeTrackingArea($0) }
-        enclosingMenuItem?.submenu?.delegate = self
-        addTrackingArea(NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil))
     }
 
-    override func mouseEntered(with event: NSEvent) {
-        isMouseInsideView = true
-        setNeedsDisplay()
-    }
-
-    override func mouseExited(with event: NSEvent) {
-        isMouseInsideView = false
-        setNeedsDisplay()
-    }
-}
-
-extension MenuItemBaseView: NSMenuDelegate {
-    func menuWillOpen(_ menu: NSMenu) {
-        isMenuOpen = true
-        setNeedsDisplay()
-    }
-
-    func menuDidClose(_ menu: NSMenu) {
-        isMenuOpen = false
-        setNeedsDisplay()
+    override func mouseUp(with event: NSEvent) {
+        DispatchQueue.main.async {
+            self.didClickView()
+        }
     }
 }

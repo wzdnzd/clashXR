@@ -42,7 +42,16 @@
 "Direct" = "Direct";
 
 /* No comment provided by engineer. */
+"Disable Restore Proxy Setting" = "Disable Restore Proxy Setting";
+
+/* No comment provided by engineer. */
 "Download fail" = "Download fail";
+
+/* No comment provided by engineer. */
+"Enhance proxy list render" = "Enhance proxy list render";
+
+/* No comment provided by engineer. */
+"fail" = "fail";
 
 /* No comment provided by engineer. */
 "Fail:" = "Fail:";
@@ -75,6 +84,9 @@
 "Proxy Mode" = "Proxy Mode";
 
 /* No comment provided by engineer. */
+"Proxy settings are changed by another process. ClashX is no longer the default system proxy." = "Proxy settings are changed by another process. ClashX is no longer the default system proxy.";
+
+/* No comment provided by engineer. */
 "Quit" = "Quit";
 
 /* No comment provided by engineer. */
@@ -99,6 +111,9 @@
 "Rule" = "Rule";
 
 /* No comment provided by engineer. */
+"Show speedTest at top" = "Show speedTest at top";
+
+/* No comment provided by engineer. */
 "Stable" = "Stable";
 
 /* No comment provided by engineer. */
@@ -109,6 +124,9 @@
 
 /* No comment provided by engineer. */
 "Success!" = "Success!";
+
+/* No comment provided by engineer. */
+"System Proxy Changed" = "System Proxy Changed";
 
 /* No comment provided by engineer. */
 "Tap to reload config" = "Tap to reload config";

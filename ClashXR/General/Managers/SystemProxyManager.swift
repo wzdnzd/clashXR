@@ -34,6 +34,8 @@ class SystemProxyManager: NSObject {
         }
     }
 
+    private var cancelInstallCheck = false
+
     // MARK: - LifeCycle
 
     override init() {
@@ -45,7 +47,7 @@ class SystemProxyManager: NSObject {
 
     func checkInstall() {
         Logger.log("checkInstall", level: .debug)
-        while !helperStatus() {
+        while !cancelInstallCheck && !helperStatus() {
             Logger.log("need to install helper", level: .debug)
             if Thread.isMainThread {
                 notifyInstall()
@@ -68,7 +70,17 @@ class SystemProxyManager: NSObject {
         })
     }
 
+    func enableProxy() {
+        let port = ConfigManager.shared.currentConfig?.port ?? 0
+        let socketPort = ConfigManager.shared.currentConfig?.socketPort ?? 0
+        SystemProxyManager.shared.enableProxy(port: port, socksPort: socketPort)
+    }
+
     func enableProxy(port: Int, socksPort: Int) {
+        guard port > 0 && socksPort > 0 else {
+            Logger.log("enableProxy fail: \(port) \(socksPort)", level: .error)
+            return
+        }
         Logger.log("enableProxy", level: .debug)
         helper()?.enableProxy(withPort: Int32(port), socksPort: Int32(socksPort), authData: authData(), error: { error in
             if let error = error {
@@ -77,10 +89,16 @@ class SystemProxyManager: NSObject {
         })
     }
 
-    func disableProxy(port: Int, socksPort: Int) {
+    func disableProxy() {
+        let port = ConfigManager.shared.currentConfig?.port ?? 0
+        let socketPort = ConfigManager.shared.currentConfig?.socketPort ?? 0
+        SystemProxyManager.shared.disableProxy(port: port, socksPort: socketPort)
+    }
+
+    func disableProxy(port: Int, socksPort: Int, forceDisable: Bool = false) {
         Logger.log("disableProxy", level: .debug)
 
-        if disableRestoreProxy {
+        if disableRestoreProxy || forceDisable {
             helper()?.disableProxy(withAuthData: authData(), error: { error in
                 if let error = error {
                     Logger.log("disableProxy \(error)", level: .error)
@@ -96,6 +114,24 @@ class SystemProxyManager: NSObject {
         })
     }
 
+    // MARK: - Expriment Menu Items
+
+    func addDisableRestoreProxyMenuItem(_ menu: inout NSMenu) {
+        let item = NSMenuItem(title: NSLocalizedString("Disable Restore Proxy Setting", comment: ""), action: #selector(optionMenuItemTap(sender:)), keyEquivalent: "")
+        item.target = self
+        menu.addItem(item)
+        updateMenuItemStatus(item)
+    }
+
+    func updateMenuItemStatus(_ item: NSMenuItem) {
+        item.state = disableRestoreProxy ? .on : .off
+    }
+
+    @objc func optionMenuItemTap(sender: NSMenuItem) {
+        disableRestoreProxy = !disableRestoreProxy
+        updateMenuItemStatus(sender)
+    }
+
     // MARK: - Private
 
     private func initAuthorizationRef() {
@@ -108,8 +144,14 @@ class SystemProxyManager: NSObject {
     }
 
     /// Install new helper daemon
-    private func installHelperDaemon() {
+    private func installHelperDaemon() -> DaemonInstallResult {
         Logger.log("installHelperDaemon", level: .info)
+
+        defer {
+            connection?.invalidate()
+            connection = nil
+            _helper = nil
+        }
 
         // Create authorization reference for the user
         var authRef: AuthorizationRef?
@@ -118,7 +160,7 @@ class SystemProxyManager: NSObject {
         // Check if the reference is valid
         guard authStatus == errAuthorizationSuccess else {
             Logger.log("Authorization failed: \(authStatus)", level: .error)
-            return
+            return .authorizationFail
         }
 
         // Ask user for the admin privileges to install the
@@ -134,7 +176,7 @@ class SystemProxyManager: NSObject {
         // Check if the authorization went succesfully
         guard authStatus == errAuthorizationSuccess else {
             Logger.log("Couldn't obtain admin privileges: \(authStatus)", level: .error)
-            return
+            return .getAdmainFail
         }
 
         // Launch the privileged helper using SMJobBless tool
@@ -143,13 +185,11 @@ class SystemProxyManager: NSObject {
         if SMJobBless(kSMDomainSystemLaunchd, SystemProxyManager.machServiceName as CFString, authRef, &error) == false {
             let blessError = error!.takeRetainedValue() as Error
             Logger.log("Bless Error: \(blessError)", level: .error)
-        } else {
-            Logger.log("\(SystemProxyManager.machServiceName) installed successfully", level: .info)
+            return .blessError((blessError as NSError).code)
         }
 
-        connection?.invalidate()
-        connection = nil
-        _helper = nil
+        Logger.log("\(SystemProxyManager.machServiceName) installed successfully", level: .info)
+        return .success
     }
 
     private func authData() -> Data? {
@@ -205,7 +245,7 @@ class SystemProxyManager: NSObject {
 
     private func helper(failture: (() -> Void)? = nil) -> ProxyConfigRemoteProcessProtocol? {
         if _helper == nil {
-            guard let newHelper = self.helperConnection()?.remoteObjectProxyWithErrorHandler({ error in
+            guard let newHelper = helperConnection()?.remoteObjectProxyWithErrorHandler({ error in
                 Logger.log("Helper connection was closed with error: \(error)")
                 failture?()
             }) as? ProxyConfigRemoteProcessProtocol else { return nil }
@@ -242,16 +282,36 @@ class SystemProxyManager: NSObject {
 extension SystemProxyManager {
     private func notifyInstall() {
         guard showInstallHelperAlert() else { exit(0) }
-        installHelperDaemon()
+
+        if cancelInstallCheck {
+            return
+        }
+
+        let result = installHelperDaemon()
+        if case .success = result {
+            return
+        }
+        result.alertAction()
+        NSAlert.alert(with: result.alertContent)
     }
 
     private func showInstallHelperAlert() -> Bool {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("ClashXR needs to install a helper tool with administrator privileges to set system proxy quickly.", comment: "")
+        alert.messageText = NSLocalizedString("ClashXR needs to install a helper tool with administrator privileges to set system proxy quickly.If not helper tool installed, ClashX won't be able to set your system proxy", comment: "")
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("Install", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
-        return alert.runModal() == .alertFirstButtonReturn
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        switch alert.runModal() {
+        case .alertFirstButtonReturn:
+            return true
+        case .alertThirdButtonReturn:
+            cancelInstallCheck = true
+            Logger.log("cancelInstallCheck = true", level: .error)
+            return true
+        default:
+            return false
+        }
     }
 }
 
@@ -263,4 +323,49 @@ fileprivate struct AppAuthorizationRights {
                                                  "group": "admin",
                                                  "timeout": 0,
                                                  "version": 1]
+}
+
+fileprivate enum DaemonInstallResult {
+    case success
+    case authorizationFail
+    case getAdmainFail
+    case blessError(Int)
+
+    var alertContent: String {
+        switch self {
+        case .success:
+            return ""
+        case .authorizationFail: return "Create authorization fail!"
+        case .getAdmainFail: return "Get admain authorization fail!"
+        case let .blessError(code):
+            switch code {
+            case kSMErrorInternalFailure: return "blessError: kSMErrorInternalFailure"
+            case kSMErrorInvalidSignature: return "blessError: kSMErrorInvalidSignature"
+            case kSMErrorAuthorizationFailure: return "blessError: kSMErrorAuthorizationFailure"
+            case kSMErrorToolNotValid: return "blessError: kSMErrorToolNotValid"
+            case kSMErrorJobNotFound: return "blessError: kSMErrorJobNotFound"
+            case kSMErrorServiceUnavailable: return "blessError: kSMErrorServiceUnavailable"
+            case kSMErrorJobNotFound: return "blessError: kSMErrorJobNotFound"
+            case kSMErrorJobMustBeEnabled: return "ClashX Helper is disabled by other process. Please run \"sudo launchctl enable system/com.west2online.ClashX.ProxyConfigHelper\" in your terminal. The command has been copied to your pasteboard"
+            case kSMErrorInvalidPlist: return "blessError: kSMErrorInvalidPlist"
+            default:
+                return "bless unknown error:\(code)"
+            }
+        }
+    }
+
+    func alertAction() {
+        switch self {
+        case let .blessError(code):
+            switch code {
+            case kSMErrorJobMustBeEnabled:
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString("sudo launchctl enable system/com.west2online.ClashX.ProxyConfigHelper", forType: .string)
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
 }

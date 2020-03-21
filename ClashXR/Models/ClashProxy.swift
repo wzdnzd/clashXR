@@ -58,7 +58,7 @@ class ClashProxySpeedHistory: Codable {
 
     lazy var delayDisplay: String = {
         switch delay {
-        case 0: return "fail"
+        case 0: return NSLocalizedString("fail", comment: "")
         default: return "\(delay) ms"
         }
     }()
@@ -82,6 +82,11 @@ class ClashProxy: Codable {
         case provider(name: ClashProxyName, provider: ClashProviderName)
     }
 
+    private static var nameLengthCachedMap = [ClashProxyName: CGFloat]()
+    static func cleanCache() {
+        nameLengthCachedMap.removeAll()
+    }
+
     lazy var speedtestAble: [SpeedtestAbleItem] = {
         guard let resp = enclosingResp, let allProxys = all else { return [] }
         var proxys = [SpeedtestAbleItem]()
@@ -101,17 +106,24 @@ class ClashProxy: Codable {
         case type, all, history, now, name
     }
 
-    lazy var maxProxyName: String = {
-        return all?.max { $1.count > $0.count } ?? ""
-    }()
-
     lazy var maxProxyNameLength: CGFloat = {
         let rect = CGSize(width: CGFloat.greatestFiniteMagnitude, height: 20)
-        let attr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 14)]
-        return (self.maxProxyName as NSString)
-            .boundingRect(with: rect,
-                          options: .usesLineFragmentOrigin,
-                          attributes: attr).width
+
+        let lengths = all?.compactMap({ name -> CGFloat in
+            if let length = ClashProxy.nameLengthCachedMap[name] {
+                return length
+            }
+
+            let rects = CGSize(width: CGFloat.greatestFiniteMagnitude, height: 20)
+            let attr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 14)]
+            let length = (name as NSString)
+                .boundingRect(with: rect,
+                              options: .usesLineFragmentOrigin,
+                              attributes: attr).width
+            ClashProxy.nameLengthCachedMap[name] = length
+            return length
+        })
+        return lengths?.max() ?? 0
     }()
 }
 
