@@ -17,8 +17,8 @@ def build_clash(version):
     command = f"""CGO_CFLAGS=-mmacosx-version-min=10.12 \
 CGO_LDFLAGS=-mmacosx-version-min=10.10 \
 GOBUILD=CGO_ENABLED=0 \
-go build -ldflags '-X "github.com/whojave/clash/constant.Version={version}" \
--X "github.com/whojave/clash/constant.BuildTime={build_time}"' \
+go build -ldflags '-X "github.com/wzdnzd/clash/constant.Version={version}" \
+-X "github.com/wzdnzd/clash/constant.BuildTime={build_time}"' \
 -buildmode=c-archive """
     subprocess.check_output(command, shell=True)
 
@@ -30,6 +30,7 @@ def run():
     if os.environ.get("CI", False) or os.environ.get("GITHUB_ACTIONS", False):
         print("writing info.plist")
         write_to_info(version)
+    write_to_info(version)
     print("done")
 
 
