@@ -9,12 +9,12 @@
 	<key>CFBundleName</key>
 	<string>com.west2online.ClashXR.ProxyConfigHelper</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3</string>
+	<string>1.4</string>
 	<key>CFBundleVersion</key>
 	<string>2</string>
 	<key>SMAuthorizedClients</key>
 	<array>
-		<string>anchor apple generic and identifier "com.west2online.ClashXR" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "8U6T3TBX56")</string>
+		<string>identifier "com.west2online.ClashXR" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: glenn@oiizz.com (F9YPF68766)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
 	</array>
 </dict>
 </plist>

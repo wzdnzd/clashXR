@@ -24,13 +24,13 @@
 "Cancel" = "取消";
 
 /* No comment provided by engineer. */
-"ClashX fail to create ~/.config/clash folder. Please check privileges or manually create folder and restart ClashX." = "ClashX 创建 ~/.config/clash 文件夹失败，请检查权限设置或者手动创建文件夹后重启 ClashX";
+"ClashXR fail to create ~/.config/clash folder. Please check privileges or manually create folder and restart ClashXR." = "ClashXR 创建 ~/.config/clash 文件夹失败，请检查权限设置或者手动创建文件夹后重启 ClashXR";
 
 /* No comment provided by engineer. */
 "ClashXR needs to install a helper tool with administrator privileges to set system proxy quickly." = "ClashXR 需要使用管理员权限安装一个帮助程序来帮助设置系统代理。";
 
 /* No comment provided by engineer. */
-"ClashX Start Error!" = "ClashX 启动出错";
+"ClashXR Start Error!" = "ClashXR 启动出错";
 
 /* No comment provided by engineer. */
 "Config file have been changed" = "配置文件已被修改";
@@ -66,7 +66,7 @@
 "Invalid input" = "输入不合法";
 
 /* No comment provided by engineer. */
-"Need to Restart the ClashX to Take effect, Please start clashX manually" = "需要重启ClashX生效，请手动启动ClashX";
+"Need to Restart the ClashXR to Take effect, Please start clashXR manually" = "需要重启ClashXR生效，请手动启动ClashXR";
 
 /* No comment provided by engineer. */
 "Never" = "从未";
@@ -75,7 +75,7 @@
 "OK" = "确定";
 
 /* No comment provided by engineer. */
-"Ports Open Fail, Please try to restart ClashX" = "端口打开失败，请尝试重启ClashX";
+"Ports Open Fail, Please try to restart ClashXR" = "端口打开失败，请尝试重启ClashXR";
 
 /* No comment provided by engineer. */
 "Prelease" = "Prelease";
@@ -84,7 +84,7 @@
 "Proxy Mode" = "出站模式";
 
 /* No comment provided by engineer. */
-"Proxy settings are changed by another process. ClashX is no longer the default system proxy." = "系统代理设置已被另一个进程修改，ClashX不再是系统默认代理";
+"Proxy settings are changed by another process. ClashXR is no longer the default system proxy." = "系统代理设置已被另一个进程修改，ClashXR不再是系统默认代理";
 
 /* No comment provided by engineer. */
 "Quit" = "退出";

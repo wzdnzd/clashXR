@@ -29,6 +29,12 @@ You can download from [release](https://github.com/yichengchen/clashX/releases) 
   ```
   bash install_dependency.sh
   ```
+- Build
+  
+- Signature check
+  ```shell 
+  ./smbjob.py setreq /path/to/ClashXR.app ClashXR/Info.plist ProxyConfigHelper/Helper-Info.plist
+  ```
 
 - Build and run.
 

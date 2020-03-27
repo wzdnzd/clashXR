@@ -11,3 +11,7 @@ ClashX.app
 *.pyc
 ClashX/clash/
 .DS_Store
+*.a
+**/dashboard/
+GeoIP2-Country.mmdb.1
+GeoIP2-Country.mmdb.2

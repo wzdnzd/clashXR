@@ -21,13 +21,15 @@ enum ClashProxyType: String, Codable {
     case http = "Http"
     case vmess = "Vmess"
     case snell = "Snell"
+    case trojan = "Trojan"
+    case relay = "Relay"
     case unknown = "Unknown"
 
     static let proxyGroups: [ClashProxyType] = [.select, .urltest, .fallback, .loadBalance]
 
     static func isProxyGroup(_ proxy: ClashProxy) -> Bool {
         switch proxy.type {
-        case .select, .urltest, .fallback, .loadBalance: return true
+        case .select, .urltest, .fallback, .loadBalance, .relay: return true
         default: return false
         }
     }
