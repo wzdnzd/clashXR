@@ -5,7 +5,8 @@ import os
 from add_build_info import write_to_info
 
 def get_version():
-    with open('./go.mod') as file:
+    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "go.mod")
+    with open(path) as file:
         for line in file.readlines():
             if "clash" in line and "ClashX" not in line:
                 return line.split(" ")[-1].strip()
@@ -19,7 +20,7 @@ CGO_LDFLAGS=-mmacosx-version-min=10.10 \
 GOBUILD=CGO_ENABLED=0 \
 go build -ldflags '-X "github.com/wzdnzd/clash/constant.Version={version}" \
 -X "github.com/wzdnzd/clash/constant.BuildTime={build_time}"' \
--buildmode=c-archive """
+-buildmode=c-archive -o goClash.a"""
     subprocess.check_output(command, shell=True)
 
 def run():

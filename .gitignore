@@ -11,7 +11,11 @@ ClashX.app
 *.pyc
 ClashX/clash/
 .DS_Store
+<<<<<<< HEAD
 *.a
 **/dashboard/
 GeoIP2-Country.mmdb.1
 GeoIP2-Country.mmdb.2
+.vscode
+ClashX/goClash/goClash.h
+ClashX/goClash/goClash.a

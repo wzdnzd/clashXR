@@ -53,8 +53,8 @@
 		49D176A9235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D176A8235614340093DD7B /* ProxyGroupSpeedTestMenuItem.swift */; };
 		49D176AB23575BB20093DD7B /* ProxyGroupMenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D176AA23575BB20093DD7B /* ProxyGroupMenuItemView.swift */; };
 		4EE3C7052374FF5F00683B13 /* Pods_ClashXR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25EC8D7AAAAA52DAACEA7F59 /* Pods_ClashXR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		4EE3C7082374FFB500683B13 /* ClashX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE3C7062374FFB400683B13 /* ClashX.a */; };
 		7099A830FE178EEA922BEB70 /* Pods_ClashXR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25EC8D7AAAAA52DAACEA7F59 /* Pods_ClashXR.framework */; };
+		8BC67C90243E31CF00784A24 /* goClash.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC67C8F243E31CF00784A24 /* goClash.a */; };
 		F910AA24240134AF00116E95 /* ProxyGroupMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */; };
 		F915A4622366ADEF004840BE /* ClashConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915A4612366ADEF004840BE /* ClashConnection.swift */; };
 		F9203A26236342820020D57D /* AppDelegate+..swift in Sources */ = {isa = PBXBuildFile; fileRef = F9203A25236342820020D57D /* AppDelegate+..swift */; };
@@ -181,8 +181,8 @@
 		49D176AA23575BB20093DD7B /* ProxyGroupMenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupMenuItemView.swift; sourceTree = "<group>"; };
 		4E49531D2375395500806BBA /* ClashXR.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = ClashXR.entitlements; sourceTree = "<group>"; };
 		4E49531F23753ACC00806BBA /* com.west2online.ClashXR.ProxyConfigHelper.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = com.west2online.ClashXR.ProxyConfigHelper.entitlements; sourceTree = "<group>"; };
-		4EE3C7062374FFB400683B13 /* ClashX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = ClashX.a; path = ClashXR/ClashX.a; sourceTree = SOURCE_ROOT; };
-		4EE3C7072374FFB500683B13 /* ClashX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClashX.h; path = ClashXR/ClashX.h; sourceTree = SOURCE_ROOT; };
+		8BC67C8F243E31CF00784A24 /* goClash.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = goClash.a; path = ClashXR/goClash/goClash.a; sourceTree = SOURCE_ROOT; };
+		8BC67C91243E31E000784A24 /* goClash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = goClash.h; path = ClashXR/goClash/goClash.h; sourceTree = SOURCE_ROOT; };
 		F910AA23240134AF00116E95 /* ProxyGroupMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyGroupMenu.swift; sourceTree = "<group>"; };
 		F915A4612366ADEF004840BE /* ClashConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashConnection.swift; sourceTree = "<group>"; };
 		F9203A25236342820020D57D /* AppDelegate+..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+..swift"; sourceTree = "<group>"; };
@@ -215,8 +215,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4EE3C7082374FFB500683B13 /* ClashX.a in Frameworks */,
 				7099A830FE178EEA922BEB70 /* Pods_ClashXR.framework in Frameworks */,
+				8BC67C90243E31CF00784A24 /* goClash.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,8 +423,8 @@
 		49CF3B3A20CD783A001EBF94 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				4EE3C7062374FFB400683B13 /* ClashX.a */,
-				4EE3C7072374FFB500683B13 /* ClashX.h */,
+				8BC67C91243E31E000784A24 /* goClash.h */,
+				8BC67C8F243E31CF00784A24 /* goClash.a */,
 				4981C88D216BAE4A008CC14A /* Localizable.strings */,
 			);
 			path = "Support Files";
@@ -909,6 +909,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClashXR",
+					"$(PROJECT_DIR)/ClashX/goClash",
+					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.19.0;
@@ -953,6 +955,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClashXR",
+					"$(PROJECT_DIR)/ClashX/goClash",
+					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.19.0;
