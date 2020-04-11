@@ -1,13 +1,15 @@
-package main // import "github.com/yichengchen/clashX/ClashX"
+package main
+
 import (
 	"C"
 	"encoding/json"
+	"github.com/oschwald/geoip2-golang"
+	"github.com/phayes/freeport"
 	"github.com/wzdnzd/clash/config"
 	"github.com/wzdnzd/clash/constant"
 	"github.com/wzdnzd/clash/hub/executor"
 	"github.com/wzdnzd/clash/hub/route"
-    // T "github.com/wzdnzd/clash/tunnel"
-	"github.com/phayes/freeport"
+	"github.com/wzdnzd/clash/log"
 	"net"
 	"path/filepath"
 	"strconv"
@@ -141,6 +143,22 @@ func clashGetConfigs() *C.char {
 		return C.CString(err.Error())
 	}
 	return C.CString(string(jsonString))
+}
+
+//export verifyGEOIPDataBase
+func verifyGEOIPDataBase() bool {
+	mmdb, err := geoip2.Open(constant.Path.MMDB())
+	if err != nil {
+		log.Warnln("mmdb fail:%s", err.Error())
+		return false
+	}
+
+	_, err = mmdb.Country(net.ParseIP("114.114.114.114"))
+	if err != nil {
+		log.Warnln("mmdb lookup fail:%s", err.Error())
+		return false
+	}
+	return true
 }
 
 func main() {
