@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+	<channel>
+		<title>ClashXR ChangeLog</title>
+		<link>https://github.com/wzdnzd/clashXR</link>
+		<description>Most recent changes with links to updates.</description>
+		<language>cn</language>
+		<item>
+			<title>1.19.0</title>
+			<description><![CDATA[<ul>
+<li>Update core version to<a href="https://github.com/Dreamacro/clash/commit/3ccd7def8642b77bd9675237faddfe1e35bf3243"> 3ccd7de</a>.</li>
+<li>Update default benchmark url to <code class="language-plaintext highlighter-rouge">http://cp.cloudflare.com/generate_204</code>.</li>
+<li>Auto detect config filename when add remote config.</li>
+<li>Speedup launch time.</li>
+<li>Auto health check to proxy groups when network environment changed.</li>
+<li>Bugfixs</li>
+</ul>
+]]>			</description>
+			<pubDate>Tue, 21 Apr 2020 10:16:02 +0000</pubDate>
+			<sparkle:minimumSystemVersion>10.12</sparkle:minimumSystemVersion>
+			<enclosure url="https://github.com/wzdnzd/clashXR/releases/download/1.19.1/ClashXR.app.zip" sparkle:version="1.19.0" sparkle:shortVersionString="1.19.0" length="16329968" type="application/octet-stream"/>
+		</item>
+	</channel>
+</rss>
