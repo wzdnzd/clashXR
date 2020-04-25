@@ -15,3 +15,4 @@ GeoIP2-Country.mmdb.2
 .vscode
 ClashXR/goClash/goClash.h
 ClashXR/goClash/goClash.a
+fastlane/report.xml

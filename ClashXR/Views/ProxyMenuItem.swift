@@ -29,9 +29,7 @@ class ProxyMenuItem: NSMenuItem {
         self.maxProxyNameLength = maxProxyNameLength
         super.init(title: proxyName, action: selector, keyEquivalent: "")
         if speedtestAble && enableShowUsingView {
-            view = ProxyItemView(name: proxyName,
-                                 selected: selected,
-                                 delay: proxy.history.last?.delayDisplay)
+            view = ProxyItemView(proxy: proxy, selected: selected)
         } else {
             if speedtestAble {
                 attributedTitle = getAttributedTitle(name: proxyName, delay: proxy.history.last?.delayDisplay)
@@ -59,7 +57,7 @@ class ProxyMenuItem: NSMenuItem {
             return
         }
         if let delay = note.userInfo?["delay"] as? String {
-            updateDelay(delay)
+            updateDelay(delay, rawValue: note.userInfo?["rawValue"] as? Int)
         }
     }
 
@@ -68,12 +66,12 @@ class ProxyMenuItem: NSMenuItem {
             assertionFailure()
             return
         }
-        updateDelay(info.history.last?.delayDisplay)
+        updateDelay(info.history.last?.delayDisplay, rawValue: info.history.last?.delay)
     }
 
-    private func updateDelay(_ delay: String?) {
+    private func updateDelay(_ delay: String?, rawValue: Int?) {
         if enableShowUsingView {
-            (view as? ProxyItemView)?.update(delay: delay)
+            (view as? ProxyItemView)?.update(str: delay, value: rawValue)
         } else {
             attributedTitle = getAttributedTitle(name: proxyName, delay: delay)
         }
@@ -112,7 +110,7 @@ extension ProxyMenuItem {
         attributed.addAttributes(hackAttr, range: NSRange(name.utf16.count..<name.utf16.count + 1))
 
         if delay != nil {
-            let delayAttr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 12)]
+            let delayAttr = [NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)]
             attributed.addAttributes(delayAttr, range: NSRange(name.utf16.count + 1..<str.utf16.count))
         }
         return attributed
