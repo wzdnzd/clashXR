@@ -902,10 +902,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
 				);
 				INFOPLIST_FILE = ClashXR/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -917,7 +917,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClashXR",
-					"$(PROJECT_DIR)/ClashX/goClash",
 					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
@@ -948,10 +947,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
-					"$(PROJECT_DIR)/ClashX/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
+					"$(PROJECT_DIR)/ClashXR/Support\\ Files",
 				);
 				INFOPLIST_FILE = ClashXR/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -963,7 +962,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClashXR",
-					"$(PROJECT_DIR)/ClashX/goClash",
 					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
