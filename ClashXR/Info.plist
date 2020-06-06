@@ -6,6 +6,19 @@
 	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>yaml</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>YAML</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -98,7 +111,7 @@
 	</dict>
 	<key>SMAuthorizedClients</key>
 	<array>
-		<string>identifier &quot;com.west2online.ClashXR&quot; and anchor apple generic and certificate leaf[subject.CN] = &quot;Mac Developer: chen yicheng (96U846XGYH)&quot; and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
+		<string>identifier "com.west2online.ClashXR" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: chen yicheng (96U846XGYH)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
 	</array>
 	<key>SMPrivilegedExecutables</key>
 	<dict>
@@ -108,12 +121,12 @@
 	<key>SUFeedURL</key>
 	<string>https://raw.githubusercontent.com/wzdnzd/clashXR/ClashXR/appcast.xml</string>
 	<key>buildTime</key>
-	<string>2020-05-10 22:34</string>
+	<string>2020-06-06 12:24</string>
 	<key>coreVersion</key>
 	<string>v0.20.0</string>
 	<key>gitBranch</key>
 	<string>ClashXR</string>
 	<key>gitCommit</key>
-	<string>1.19.0-72-g022e54d</string>
+	<string>1.19.0-82-gd297aa4</string>
 </dict>
 </plist>

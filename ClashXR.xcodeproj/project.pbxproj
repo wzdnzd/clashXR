@@ -545,7 +545,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = west2online;
 				TargetAttributes = {
 					49CF3B1C20CD7463001EBF94 = {
@@ -905,10 +905,10 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashXR/ClashXR.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.20.0;
+				CURRENT_PROJECT_VERSION = 1.20.2;
 				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -931,7 +931,7 @@
 					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.20.0;
+				MARKETING_VERSION = 1.20.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.west2online.ClashXR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -948,11 +948,11 @@
 			baseConfigurationReference = 236597F60950A41FE65B15D3 /* Pods-ClashXR.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = ClashX/ClashX.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = ClashXR/ClashXR.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.20.0;
+				CURRENT_PROJECT_VERSION = 1.20.2;
 				DEVELOPMENT_TEAM = 5S22G6U9WJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -975,7 +975,7 @@
 					"$(PROJECT_DIR)/ClashXR/goClash",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.20.0;
+				MARKETING_VERSION = 1.20.2;
 				OTHER_CODE_SIGN_FLAGS = "--timestamp";
 				PRODUCT_BUNDLE_IDENTIFIER = com.west2online.ClashXR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
