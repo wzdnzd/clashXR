@@ -121,12 +121,12 @@
 	<key>SUFeedURL</key>
 	<string>https://raw.githubusercontent.com/wzdnzd/clashXR/ClashXR/appcast.xml</string>
 	<key>buildTime</key>
-	<string>2020-06-06 12:24</string>
+	<string>2020-06-21 18:12</string>
 	<key>coreVersion</key>
 	<string>v0.20.0</string>
 	<key>gitBranch</key>
 	<string>ClashXR</string>
 	<key>gitCommit</key>
-	<string>1.19.0-82-gd297aa4</string>
+	<string>1.19.0-88-g0adf400</string>
 </dict>
 </plist>
