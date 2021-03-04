@@ -1,0 +1,163 @@
+# reference: https://github.com/Hackl0us/SS-Rule-Snippet/blob/master/LAZY_RULES/clash.yaml
+# reference: https://lancellc.gitbook.io/clash/clash-config-file/dns
+
+# HTTP 代理端口
+# port: 13661
+
+# SOCKS5 代理端口
+# socks-port: 13660
+
+# HTTP和SOCKS5共用同一个端口
+mixed-port: 13600
+
+# Linux 和 macOS 的 redir 代理端口 (如需使用此功能，请取消注释)
+# redir-port: 7892
+
+# 允许局域网的连接（可用来共享代理）
+allow-lan: false
+
+# 规则模式：Rule（规则） / Global（全局代理）/ Direct（全局直连）
+mode: Rule
+
+# 设置日志输出级别 (默认级别：silent，即不输出任何内容，以避免因日志内容过大而导致程序内存溢出）。
+# 5 个级别：silent / info / warning / error / debug。级别越高日志输出量越大，越倾向于调试，若需要请自行开启。
+log-level: error
+
+# clash 的 RESTful API
+external-controller: 127.0.0.1:19090
+
+# 您可以将静态网页资源（如 clash-dashboard）放置在一个目录中，clash 将会服务于 `${API}/ui`
+# 参数应填写配置目录的相对路径或绝对路径。
+# external-ui: folder
+
+# RESTful API 的口令 (可选)
+# secret: ""
+
+# 实验性功能
+experimental:
+  ignore-resolve-fail: true # 忽略 DNS 解析失败，默认值为 true
+
+# 本地 SOCKS5 / HTTP(S) 服务认证
+# authentication:
+#  - "user1:pass1"
+#  - "user2:pass2"
+
+# # 实验性功能 hosts, 支持通配符 (例如 *.clash.dev 甚至 *.foo.*.example.com)
+# # 静态的域名 比 通配域名 具有更高的优先级 (foo.example.com 优先于 *.example.com)
+# # 注意: hosts 在 fake-ip 模式下不生效
+# hosts:
+#   '*.clash.dev': 127.0.0.1
+#   'alpha.clash.dev': '::1'
+
+dns:
+  enable: true
+  ipv6: false
+  listen: 0.0.0.0:53
+  default-nameserver:
+  - 114.114.114.114
+  - 223.5.5.5
+  enhanced-mode: fake-ip # redir-host
+  fake-ip-range: 198.18.0.1/16 # 如果你不知道这个参数的作用，请勿修改
+  fake-ip-filter: # fake-ip 白名单列表
+  - '*.lan'
+  - localhost.ptlogin2.qq.com
+  - '.ali.com'
+  - '.alibaba-inc.com'
+  - '.alibaba.com'
+  - '.alibaba.net'
+  - '.alibabacorp.com'
+  - '.alicdn.com'
+  - '.aliexpress.com'
+  - '.alipay-corp.com'
+  - '.alipay-inc.com'
+  - '.alipay.com'
+  - '*.*.alipay.net'
+  - '.alipay.net'
+  - '.alipayobjects.com'
+  - '.alitrip.com'
+  - '.aliway.com'
+  - '.aliyun-inc.com'
+  - '.aliyuncs.com'
+  - '.alizoo.com'
+  - '.amap.com'
+  - '.antfin-inc.com'
+  - '.antfin.com'
+  - '.antfinancial-corp.com'
+  - '.antsdaq-corp.com'
+  - '.anyproxy.io'
+  - '.atatech.org'
+  - '.cainiao-inc.com'
+  - '.cnzz.com'
+  - '.dingtalk.com'
+  - '.dingtalkapps.com'
+  - '.ele.to'
+  - '.eleme.cn'
+  - '.eleme.com.cn'
+  - '.eleme.io'
+  - '.elemecdn.cn'
+  - '.elemecdn.com'
+  - '.elenet.me'
+  - '.hemaos.com'
+  - '.koubei-corp.com'
+  - '.mayibank.net'
+  - '.mmstat.com'
+  - '.nlark.com'
+  - '.rajax-inc.com'
+  - '.rajax-inc.net'
+  - '.rajax.me'
+  - '.sm.cn'
+  - '.taobao.net'
+  - '.taobao.org'
+  - '.tbcdn.cn'
+  - '.tbsite.net'
+  - '.tmall.net'
+  - '.ucweb.local'
+  - '.yunos-inc.com'
+  - '.yunos.com'
+
+  nameserver:
+    - 1.2.4.8
+    - 114.114.114.114
+    - 223.5.5.5
+    - tls://13800000000.rubyfish.cn:853
+    - 119.29.29.29
+    - 180.76.76.76
+    #- https://13800000000.rubyfish.cn/
+
+  fallback: # 与 nameserver 内的服务器列表同时发起请求，当规则符合 GEOIP 在 CN 以外时，fallback 列表内的域名服务器生效。
+    - tls://13800000000.rubyfish.cn:853
+    - tls://1.0.0.1:853
+    - tls://dns.google:853
+
+    #- https://13800000000.rubyfish.cn/
+    #- https://cloudflare-dns.com/dns-query
+    #- https://dns.google/dns-query
+
+  fallback-filter:
+    geoip: true # 默认
+    ipcidr: # 在这个网段内的 IP 地址会被考虑为被污染的 IP
+      - 240.0.0.0/4
+
+tun:
+  enable: true
+  stack: system # or gvisor 
+  macOS-auto-route: true
+  macOS-auto-detect-interface: true
+  dns-hijack:
+    - tcp://8.8.8.8:53
+
+cfw-latency-timeout: 5000
+
+# 代理节点
+proxies:
+
+# 代理组策略
+proxy-groups:
+
+#规则
+rules:
+ - DOMAIN-SUFFIX,alipay.net,🎯 全球直连
+ - DOMAIN-SUFFIX,tbsite.net,🎯 全球直连
+ - DOMAIN-SUFFIX,alibaba.net,🎯 全球直连
+ - DOMAIN,antmonitor.ops.alipay.com,🎯 全球直连
+ - DOMAIN,antmonitor.alipay.com,🎯 全球直连
